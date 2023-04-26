@@ -2,6 +2,7 @@ package view;
 
 import java.util.Scanner;
 
+import controller.ManagerServiceImpl;
 import dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +16,7 @@ public class EmployeeView {
 	
 	public void EmployeeMenu () {
 		Scanner scan = new Scanner(System.in);
-		while (true) {
-			
-			
-		}
+		ManagerServiceImpl impl = new ManagerServiceImpl();
+		impl.registerEmployee(loginedUser);
 	}
 }

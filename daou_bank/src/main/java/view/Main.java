@@ -9,7 +9,8 @@ public class Main {
 	public static void main(String[] args) {
 		
 		// 임시 유저
-		UserDTO tempUser = new UserDTO(1, "bizyoung93", "123123", "Employee", "김현영", 20);
+		UserDTO tempUser = new UserDTO(1, 
+				"bizyoung93", "123123", "Manager", "김현영", "1993-03-29");
 		
 		Scanner scan = new Scanner(System.in);
 		System.out.println("임시 메뉴를 입력하세요(1: 관리자 로그인, 2: 고객 로그인, 0: 종료)");

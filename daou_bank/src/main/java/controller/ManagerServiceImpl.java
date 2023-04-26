@@ -27,6 +27,7 @@ public class ManagerServiceImpl {
 		  new SqlSessionFactoryBuilder().build(inputStream);
 	}
 	
+	
 	// 직원 등록
 	public int registerEmployee (UserDTO user) {
 		int num = 0;
@@ -34,10 +35,11 @@ public class ManagerServiceImpl {
 		try {
 			ManagerDAO dao = new ManagerDAO();
 			num = dao.registerEmployee(session, user);
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			session.close();
 		}
-
 		return num;
 	};
 	

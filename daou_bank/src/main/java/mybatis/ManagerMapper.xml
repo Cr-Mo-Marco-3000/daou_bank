@@ -3,9 +3,23 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.ManagerMapper">
- 
-   <!-- sql문 작성 -->
-   
+	
+  <insert id="registerEmployee" parameterType="dto.UserDTO">
+	  INSERT INTO bank_user(
+	  	user_key, 
+	  	user_id, 
+	  	user_password, 
+	  	type, 
+	  	name, 
+	  	birth_day)
+	  VALUES (
+	  	${user_key},
+	  	${user_id},
+	  	${user_password},
+	  	${type},
+	  	${name},
+	  	${birth_day})
+  </insert> 
    
 </mapper>
 

@@ -14,5 +14,5 @@ public class UserDTO {
 	String user_password;
 	String type;
 	String name;
-	int age;
+	String birth_day;
 }
