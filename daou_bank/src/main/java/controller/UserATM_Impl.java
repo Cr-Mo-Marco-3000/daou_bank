@@ -150,14 +150,21 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 				String formatMoney = df.format(money);
 				
 				System.out.println("");
-				System.out.println("  ┏━━━━*Transfer━━━━┓");
-				System.out.println("  ┃                 *");
-				System.out.println("  ┃ 받으실분의 계좌 : " + account);
-				System.out.println("  ┃ 받으실분의 성함 : " + name);
-				System.out.println("  ┃ 송금 금액 : " + formatMoney + "원");
-				System.out.println("  ┃                 *");
-				System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
-				System.out.print("   송금 [1] 취소 [0] :");
+				System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+				System.out.println("\t┃	     Transfer		┃");
+				System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+				System.out.println("\t  ┃		      ┃");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+				System.out.println("\t  ┃                 *");
+				System.out.println("\t  ┃ 받으실분의 계좌 : " + account);
+				System.out.println("\t  ┃ 받으실분의 성함 : " + name);
+				System.out.println("\t  ┃ 송금 금액 : " + formatMoney + "원");
+				System.out.println("\t  ┃                 *");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+				System.out.println("\t  ┃                   *");
+				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+				System.out.print("\t   송금 [1] 취소 [0] : ");
+				System.out.println("");
 				String sel = Menu.scan.next();
 				
 				if(!sel.equals("1")) return;
@@ -201,15 +208,22 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 		String formatMoney = df.format(balance);
 		
 		System.out.println("");
-		System.out.println("  ┏━━━━* "+bank+"━━━━┓");
-		System.out.println("  ┃                 *");
-		System.out.println("  ┃ 계좌번호 : A"+accountNumber);
-		System.out.println("  ┃    성함 : "+userName);
-		System.out.println("  ┃    잔액 : "+formatMoney+"원");
-		System.out.println("  ┃ ");
-		System.out.println("  ┃ [0] 확인 ");
-		System.out.println("  ┃                 *");
-		System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
+		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+		System.out.println("\t┃	     " + bank + "		┃");
+		System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+		System.out.println("\t  ┃		      ┃");
+		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+		System.out.println("\t  ┃                 *");
+		System.out.println("\t  ┃ 계좌번호 : A"+accountNumber);
+		System.out.println("\t  ┃    성함 : "+userName);
+		System.out.println("\t  ┃    잔액 : "+formatMoney+"원");
+		System.out.println("\t  ┃ ");
+		System.out.println("\t  ┃ [0] 확인 ");
+		System.out.println("\t  ┃                 *");
+		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+		System.out.println("\t  ┃                   *");
+		System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+		System.out.println("");
 		
 		String sel = Menu.scan.next();
 		if(sel.equals("0")) return;
@@ -251,14 +265,24 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 				
 					
 					System.out.printf("[%d] 번 거래내역\n",count);
-					System.out.println("  ┏━━━* "+check);
-					System.out.println("  ┃ ");
-					System.out.println("  ┃    Name : "+name);
-					System.out.println("  ┃  Amount : "+formatCash+"원");
-					System.out.println("  ┃ ");
-					System.out.println("  ┃ Balance : "+formatBalance+"원");
-					System.out.println("  ┃                 *");
-					System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
+					
+					System.out.println("");
+					System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+					System.out.println("\t┃	     " + check + "		┃");
+					System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+					System.out.println("\t  ┃		      ┃");
+					System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+					System.out.println("\t  ┃                 *");
+					System.out.println("\t  ┃ ");
+					System.out.println("\t  ┃    Name : "+name);
+					System.out.println("\t  ┃  Amount : "+formatCash+"원");
+					System.out.println("\t  ┃ ");
+					System.out.println("\t  ┃ Balance : "+formatBalance+"원");
+					System.out.println("\t  ┃                 *");
+					System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+					System.out.println("\t  ┃                   *");
+					System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+					System.out.println("");
 					/* 남아있던 잔액 을 비교하여 입금/출금 을 확인합니다. */
 					checkBalance = money;
 					/* 통장거래 내역 횟수를 확인할 변수 */
