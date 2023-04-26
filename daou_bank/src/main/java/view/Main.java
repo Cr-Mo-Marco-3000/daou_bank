@@ -8,6 +8,22 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
+
+		
+		System.out.println("");
+		System.out.println("\t /       \\  /      \\  /      \\ /  |  /  |       /      \\ /        |/  \\     /  |");
+		System.out.println("\t $$$$$$$  |/$$$$$$  |/$$$$$$  |$$ |  $$ |      /$$$$$$  |$$$$$$$$/ $$  \\   /$$ |");
+		System.out.println("\t $$ |  $$ |$$ |__$$ |$$ |  $$ |$$ |  $$ |      $$ |__$$ |   $$ |   $$$  \\ /$$$ |");
+		System.out.println("\t $$ |  $$ |$$    $$ |$$ |  $$ |$$ |  $$ |      $$    $$ |   $$ |   $$$$  /$$$$ |");
+		System.out.println("\t $$ |  $$ |$$$$$$$$ |$$ |  $$ |$$ |  $$ |      $$$$$$$$ |   $$ |   $$ $$ $$/$$ |");
+		System.out.println("\t $$ |__$$ |$$ |  $$ |$$ \\__$$ |$$ \\__$$ |      $$ |  $$ |   $$ |   $$ |$$$/ $$ |");
+		System.out.println("\t $$    $$/ $$ |  $$ |$$    $$/ $$    $$/       $$ |  $$ |   $$ |   $$ | $/  $$ |");
+		System.out.println("\t $$$$$$$/  $$/   $$/  $$$$$$/   $$$$$$/        $$/   $$/    $$/    $$/      $$/ ");
+		System.out.println("");
+		
+		Menu menu = Menu.getInstance(); //메뉴화면 인스턴스
+		menu.init();
+	
 		// 임시 유저
 		UserDTO tempUser = new UserDTO(1, 
 				"bizyoung93", "123123", "Manager", "김현영", "1993-03-29");
@@ -25,7 +41,6 @@ public class Main {
 			System.out.println("서비스를 종료합니다.");
 			System.exit(0);
 		}
-		
 		
 	}
 }

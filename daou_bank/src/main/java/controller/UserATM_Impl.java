@@ -7,9 +7,9 @@ import java.util.Scanner;
 
 import model.BankAccount;
 import model.User;
-import view.MenuImpl;
+import view.Menu;
 
-public class UserATM_Impl implements UserATM{
+public class UserATM_Impl implements UserATM {
 
 	public int accountNumber; // 계좌번호
 	public String userName; // 회원 이름
@@ -19,7 +19,7 @@ public class UserATM_Impl implements UserATM{
 	public int balance; // 계좌잔액
 	
 	
-	MenuImpl menu = MenuImpl.getInstance();
+	Menu menu = Menu.getInstance();
 	
 private static UserATM_Impl userImpl = new UserATM_Impl();
 public static UserJoin_Impl userJoin = new UserJoin_Impl();
@@ -51,7 +51,7 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 		
 		System.out.print("출금하실 금액을 입력해주세요. [취소:0] :");
 		try {
-		int money = MenuImpl.scan.nextInt();
+		int money = Menu.scan.nextInt();
 		
 		/* 금액이 0원이하이거나 1000원 단위가 아닐때 */
 		if(money <= 0 || money % 1000 != 0) {
@@ -79,7 +79,7 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 		
 		System.out.print("입금하실 금액을 입력해주세요 [취소:0] :");
 		try {
-			int money = MenuImpl.scan.nextInt();
+			int money = Menu.scan.nextInt();
 			
 			/* 금액이 0원이하이거나 1000원 단위가 아닐때 */
 			if(money <= 0 || money % 1000 != 0) {
@@ -104,7 +104,7 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 		System.out.println("입금하실 계좌를 입력하세요.");
 		try {
 			String name = "";
-			int account = MenuImpl.scan.nextInt();
+			int account = Menu.scan.nextInt();
 			boolean check = false;
 			for(String key : User.userMap.keySet()) {			
 				if(account == (User.userMap.get(key).getAccountNumber())) {
@@ -119,16 +119,22 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 			}
 			
 			System.out.println("");
-			System.out.println("  ┏━━━━*Transfer━━━━┓");
-			System.out.println("  ┃                 *");
-			System.out.println("  ┃ 받으실분의 계좌 : " + account);
-			System.out.println("  ┃ 받으실분의 성함 : " + name);
-			System.out.println("  ┃                 *");
-			System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
-			System.out.print("   입금하실 금액을 입력해주세요 [취소:0] :");
+			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+			System.out.println("\t┃	     Transfer		┃");
+			System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+			System.out.println("\t  ┃		      ┃");
+			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+			System.out.println("\t  ┃                 *");
+			System.out.println("\t  ┃ 받으실분의 계좌 : " + account);
+			System.out.println("\t  ┃ 받으실분의 성함 : " + name);
+			System.out.println("\t  ┃                 *");
+			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+			System.out.println("\t  ┃                   *");
+			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+			System.out.print("\t   입금하실 금액을 입력해주세요 [취소:0] :");
 			
 			try {
-				int money = MenuImpl.scan.nextInt();
+				int money = Menu.scan.nextInt();
 					
 				/* 금액이 0원이하이거나 1000원 단위가 아닐때 */
 				if(money <= 0 || money % 1000 != 0) {
@@ -152,12 +158,12 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 				System.out.println("  ┃                 *");
 				System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
 				System.out.print("   송금 [1] 취소 [0] :");
-				String sel = MenuImpl.scan.next();
+				String sel = Menu.scan.next();
 				
 				if(!sel.equals("1")) return;
 				
 				System.out.print("비밀번호 : ");
-				String pw = MenuImpl.scan.next();
+				String pw = Menu.scan.next();
 				if(!userCheckPassWord(pw)) return;
 				
 				int cash = BankAccount.bankMap.get(account).getBalance();
@@ -205,7 +211,7 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 		System.out.println("  ┃                 *");
 		System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
 		
-		String sel = MenuImpl.scan.next();
+		String sel = Menu.scan.next();
 		if(sel.equals("0")) return;
 	}
 	
