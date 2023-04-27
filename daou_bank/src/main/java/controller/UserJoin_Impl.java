@@ -1,11 +1,24 @@
 package controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import dao.DBDAO;
+import dto.AccountDTO;
+import dto.UserDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import model.BankAccount;
 import model.User;
 import view.Menu;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserJoin_Impl implements UserJoin{
 
 public static String userId;
@@ -20,11 +33,13 @@ Menu menu = Menu.getInstance();
 		return userJoin;
 	}
 	
+	// ==================================================================================================================
+	// 회원 가입 메서드
 	@Override
-	public void userJoin() {
+	public void userSignup() {
 		System.out.println("");
 		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
-		System.out.println("\t┃      Join Account	┃");
+		System.out.println("\t┃        회 원 가 입      	┃");
 		System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
 		System.out.println("\t  ┃		      ┃");
 		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
@@ -33,7 +48,8 @@ Menu menu = Menu.getInstance();
 		System.out.print("\t  ┃  ID : ");
 		String id = Menu.scan.next();	
 		if(id.equals("0")) return;
-		if(User.userMap.containsKey(id)) {
+		DBDAO dbcheck = new DBDAO();
+		if(dbcheck.check_Id(id)) {
 			System.out.println("\t  ┃ 중복된 아이디입니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -47,41 +63,39 @@ Menu menu = Menu.getInstance();
 		System.out.print("\t  ┃  이름을 입력하세요 : ");
 		String name = Menu.scan.next();
 		if(name.equals("0")) return;
-		System.out.println("\t  ┃  계좌를 생성 중입니다..");
+		System.out.print("\t  ┃  생년월일을 입력하세요 : ");
+		String birth_day = Menu.scan.next();
+		if(birth_day.equals("0")) return;
 		System.out.println("\t  ┃ ");
 
-     /*회원가입 메소드 userJoin() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이되면*/
-     /* 계좌번호 생성 */
-		int account = 12345+User.userMap.size();
+     /*회원가입 메소드 userSingup() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이되면*/
     /* 회원정보 저장 */ 
-		User user = new User(id,account,pw,name);		
-    /* 계좌정보 저장 */ 
-		BankAccount bank = new BankAccount(account,name,0);
-		BankAccount.bankMap.put(account,bank);
-		bank.setBankFile();
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		User.userMap.put(id,user);
-		System.out.println(user.toString());
-		
-		//user.setUserFile();
-		
-		File file = new File("account.txt");
-		// 파일 유/무 판단 
-		if (file.isFile()) {
-			System.out.println("\t  ┃ 계좌가입이 완료되었습니다.");
+		UserDTO userdto = new UserDTO(id,pw,name,birth_day);
+		if (dbcheck.check_login_user_db(userdto)) {
+			System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
 			System.out.println("\t  ┃                   *");
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-		}		
+			return;
+		}
+
+		
+		// 파일 유/무 판단 
+		System.out.println("\t  ┃ 회원가입이 완료되었습니다.");
+		System.out.println("\t  ┃                 *");
+		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+		System.out.println("\t  ┃                   *");
+		System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+		
+	    /* 계좌정보 저장 */ 
+		DBDAO db_dao = new DBDAO();
+		db_dao.insert_user_db(userdto);
 	}
 
+	
+	// ==================================================================================================================
+	// 로그인
 	@Override
 	public void userLogin() {
 		
@@ -89,10 +103,19 @@ Menu menu = Menu.getInstance();
 		String id = Menu.scan.next();
 		System.out.println("비밀번호를 입력하세요:");
 		String pw = Menu.scan.next();
-		if(User.userMap.containsKey(id) && pw.equals(User.userMap.get(id).getUserPw()) ){			
+		
+		Map<Integer, UserDTO> login_user_map = new HashMap<>();
+		List<AccountDTO> login_user_account_list = new ArrayList<>();
+		
+		UserDTO userdto = new UserDTO(id,pw);
+		
+		DBDAO db_login_dao = new DBDAO();
+		if(db_login_dao.check_login_user_db(userdto) ){	
+			login_user_map= db_login_dao.login_user_info(userdto);
+			login_user_account_list = db_login_dao.login_user_account(userdto);
 			System.out.println(id+"님 환영합니다.");		
 			UserATM_Impl.userId = id;
-			menu.userView();
+			menu.userView(login_user_map, login_user_account_list);
 		}else {
 			System.out.println("아이디 & 비밀번호를 확인해주세요.");
 		}
@@ -109,4 +132,11 @@ Menu menu = Menu.getInstance();
 			System.out.println(value.toList()); count++;
 		}
 	}
+	
+	// ==================================================================================================================
+	// DB_check
+	
+	
+	
+	
 }
