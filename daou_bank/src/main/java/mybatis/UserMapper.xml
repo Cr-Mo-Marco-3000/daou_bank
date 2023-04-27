@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.UserMapper">
+	
+  <select id="ID_dupli_check" parameterType="string" resultType = "dto.UserDTO">
+		SELECT *
+		FROM BANK_USER
+		WHERE USER_ID = #{id}
+  </select> 
+   
+  <select id="User_check" parameterType="dto.UserDTO" resultType = "dto.UserDTO">
+		SELECT *
+		FROM BANK_USER
+		WHERE NAME = #{name} and BIRTH_DAY = TO_DATE(#{birth_day},'YYYYMMDD')
+  </select> 
+
+  <insert id="User_sign_up" parameterType="dto.UserDTO" >
+		INSERT INTO BANK_USER(USER_KEY, USER_ID, USER_PASSWORD, TYPE, NAME, BIRTH_DAY)
+		VALUES (bank_user_sequence.NEXTVAL, #{user_id}, #{user_password},'Customer',#{name},TO_DATE(#{birth_day},'YYYYMMDD'))
+  </insert> 
+
+  <select id="Login_user_info_Map" parameterType="dto.UserDTO" resultType = "dto.UserDTO" >
+		SELECT *
+		FROM BANK_USER
+		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}
+  </select> 
+   
+   <select id="Login_user_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
+		SELECT *
+		FROM ACCOUNT
+		WHERE USER_KEY = #{user_key}
+  </select> 
+   
+</mapper>

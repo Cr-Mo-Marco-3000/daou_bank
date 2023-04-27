@@ -1,9 +1,13 @@
 package view;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import controller.UserATM_Impl;
 import controller.UserJoin_Impl;
+import dto.AccountDTO;
 import dto.UserDTO;
 import model.BankAccount;
 import model.User;
@@ -17,7 +21,7 @@ public class Menu {
 	
 	// 로그인한 유저 데이터 담는 객체 생성
 	private static UserDTO loginedUser;
-			
+
 
 	
 	// 싱글톤
@@ -65,7 +69,7 @@ public class Menu {
 					break;
 					
 				case ("2"):
-					userJoin.userJoin();
+					userJoin.userSignup();
 					break;
 					
 				case ("3"):
@@ -85,8 +89,8 @@ public class Menu {
 		}
 		
 		// 일반 유저가 로그인하면, 보이는 메뉴입니다. 
-		public void userView() {
-		
+		public void userView(Map<Integer, UserDTO> login_user_map, List<AccountDTO> login_user_account_list) {
+					
 				while(true) {
 					System.out.println("");
 					System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
@@ -137,7 +141,7 @@ public class Menu {
 							
 						default:
 							System.out.println("없는 메뉴를 선택하셨습니다");
-							userView();
+							userView(login_user_map,login_user_account_list);
 					}	
 				}
 		}
@@ -194,7 +198,7 @@ public class Menu {
 						
 					default:
 						System.out.println("없는 메뉴를 선택하셨습니다");
-						userView();
+						EmployeeView();
 				}	
 			}
 	}

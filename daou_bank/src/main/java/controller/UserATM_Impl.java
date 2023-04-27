@@ -190,7 +190,7 @@ public static UserJoin_Impl userJoin = new UserJoin_Impl();
 			System.out.println("잘못 입력하셨습니다.");
 		}
 		System.out.println();
-		menu.userView();		
+		//menu.userView();		
 	}
 	
 	@Override
