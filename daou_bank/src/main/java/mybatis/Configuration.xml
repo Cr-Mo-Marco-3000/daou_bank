@@ -21,6 +21,7 @@
   <mappers>
     <mapper resource="mybatis/BankMapper.xml"/>
     <mapper resource="mybatis/UserMapper.xml"/>
+    <mapper resource="mybatis/AccountMapper.xml"/>
     <mapper resource="mybatis/ManagerMapper.xml"/>
    </mappers>
 </configuration>

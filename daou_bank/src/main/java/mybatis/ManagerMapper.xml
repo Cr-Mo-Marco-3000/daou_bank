@@ -49,6 +49,8 @@
 	  SET type='Employee' 
 	  WHERE user_id = #{user}
   </update>
+  
+  
 </mapper>
 
 
