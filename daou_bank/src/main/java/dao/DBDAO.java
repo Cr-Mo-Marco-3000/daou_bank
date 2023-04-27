@@ -60,7 +60,6 @@ public class DBDAO {
 			return n;
 		}
 		
-		
 		// 로그인 정보의 UserDTO를 반환하는 메서드
 		public UserDTO login_user_info(SqlSession session, UserDTO dto) {
 			
