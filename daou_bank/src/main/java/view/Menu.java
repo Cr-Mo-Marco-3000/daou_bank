@@ -67,7 +67,7 @@ public class Menu {
 			switch(menu) {
 			
 				case ("1"):
-					userJoin.userLogin();
+					userJoin.userLogin(loginedUser,login_User_account_list);
 
 					break;
 					

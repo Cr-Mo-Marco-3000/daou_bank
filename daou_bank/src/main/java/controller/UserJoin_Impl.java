@@ -97,7 +97,7 @@ Menu menu = Menu.getInstance();
 	// ==================================================================================================================
 	// 로그인
 	@Override
-	public void userLogin() {
+	public void userLogin(UserDTO loginedUser, List<AccountDTO> login_User_account_list ) {
 		
 		System.out.println("아이디를 입력하세요:");
 		String id = Menu.scan.next();
@@ -111,9 +111,9 @@ Menu menu = Menu.getInstance();
 		
 		DBDAO db_login_dao = new DBDAO();
 		if(db_login_dao.check_login_user_db(userdto) ){	
-			login_user_map= db_login_dao.login_user_info(userdto);
-			login_user_account_list = db_login_dao.login_user_account(userdto);
-			System.out.println(id+"님 환영합니다.");		
+			loginedUser= db_login_dao.login_user_info(userdto);
+			login_User_account_list = db_login_dao.login_user_account(userdto);
+			System.out.println(loginedUser.getName()+"님 환영합니다.");		
 			UserATM_Impl.userId = id;
 			menu.userView(login_user_map, login_user_account_list);
 		}else {

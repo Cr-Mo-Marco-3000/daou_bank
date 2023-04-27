@@ -65,14 +65,12 @@ public class DBDAO {
 		
 		
 		// 로그인 정보의 (User_key, User) Map를 반환하는 메서드
-		public Map<Integer, UserDTO> login_user_info(UserDTO dto) {
+		public UserDTO login_user_info(UserDTO dto) {
 			
 			SqlSession session = sqlSessionFactory.openSession();
-			Map<Integer, UserDTO> user_info_map = new HashMap<>();
 			UserDTO login_user_info = session.selectOne("Login_user_info_Map", dto);
-			user_info_map.put(login_user_info.getUser_key(), login_user_info);
 						
-			return user_info_map;
+			return login_user_info;
 		}
 		
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
