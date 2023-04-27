@@ -36,9 +36,16 @@ public class ManagerDAO {
 	}
 	
 	// 직원을 일반 직원으로 바꿈
-	public int giveUpManager (SqlSession session, String user) {
+	public int giveUpManager(SqlSession session, String user) {
 		int n = 0;
 		n = session.update("mybatis.ManagerMapper.giveUpManager", user);
+		return n;
+	}
+	
+	// 직원을 삭제
+	public int deleteEmployee(SqlSession session, String user) {
+		int n = 0;
+		n = session.delete("mybatis.ManagerMapper.deleteEmployee", user);
 		return n;
 	}
 }
