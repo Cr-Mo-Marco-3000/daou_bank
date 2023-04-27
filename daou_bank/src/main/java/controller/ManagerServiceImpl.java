@@ -82,7 +82,7 @@ public class ManagerServiceImpl {
 				throw new HandOverManagerException("귀하의 신분 변경이 실패했습니다.");
 			}
 			session.commit();
-			user.setType("Employee");
+
 		} finally {
 			session.rollback();
 			session.close();
