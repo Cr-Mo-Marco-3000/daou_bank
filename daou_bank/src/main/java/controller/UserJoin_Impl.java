@@ -145,7 +145,6 @@ Menu menu = Menu.getInstance();
 		session.close();
 		return;
 	}
-
 	
 	@Override
 	public void userList() {

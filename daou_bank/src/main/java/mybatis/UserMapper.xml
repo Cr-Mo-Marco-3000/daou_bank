@@ -25,7 +25,7 @@
 		SELECT *
 		FROM BANK_USER
 		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}
-  </select> 
+  </select>
    
    <select id="Login_user_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
 		SELECT *
