@@ -26,7 +26,8 @@
 	  	#{user_password},
 	  	'Employee',
 	  	#{name},
-	  	#{birth_day})
+	  	TO_DATE(#{birth_day}, 'yyyymmdd')
+	  	)
   </insert> 
    
   <!-- 해당 유저가 일반 직원인지 확인 -->
@@ -49,6 +50,12 @@
 	  SET type='Employee' 
 	  WHERE user_id = #{user}
   </update>
+  
+   <!-- 직원 삭제 -->
+   <delete id="deleteEmployee" parameterType="String">
+	   DELETE FROM bank_user
+	   WHERE user_id = #{user}
+   </delete>
 </mapper>
 
 
