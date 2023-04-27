@@ -20,8 +20,9 @@ public class Menu {
 	public static UserJoin_Impl userJoin = new UserJoin_Impl();
 	
 	// 로그인한 유저 데이터 담는 객체 생성
-	private static UserDTO loginedUser;
-
+	private static Map<Integer, UserDTO> login_user_map;
+	private static List<AccountDTO> login_user_account_list;
+	
 
 	
 	// 싱글톤
