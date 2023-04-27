@@ -6,7 +6,7 @@ public class AccountDTO {
 	int user_key;			
 	int account_password;
 	int balance;
-	boolean is_temporary;
-	String create_day;
+	String is_temporary;
+	String create_date;
 	
 }
