@@ -176,6 +176,16 @@ public class Menu {
 				} else if (menu == 3) {
 					System.out.println("직원 등록을 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();
+					// 직원 정보 입력
+					System.out.println("직원 아이디를 입력해주세요");
+					String user_id = scan.nextLine();
+					System.out.println("직원의 비밀번호를 입력해주세요");
+					String user_password = scan.nextLine();
+					System.out.println("직원의 비밀번호 확인을 입력해주세요");
+					String user_password_confirm = scan.nextLine();
+					System.out.println("직원의 이름을 입력해주세요");
+					System.out.println("직원의 생일을 입력해주세요");
+					String
 					try {
 						service.registerEmployee(loginedUser);
 					} catch (EmployeeCreationFailException e) {
