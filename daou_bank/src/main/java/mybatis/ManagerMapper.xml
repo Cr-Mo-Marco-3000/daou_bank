@@ -4,6 +4,14 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.ManagerMapper">
 	
+  <!-- 중복확인 --> 
+  <select id="selectEmployeeId" parameterType="String" resultType="int">
+	  SELECT count(*) 
+	  FROM bank_user
+	  WHERE user_id = #{user_id}
+  </select>
+  
+  <!-- 직원등록 -->   	
   <insert id="registerEmployee" parameterType="dto.UserDTO">
 	  INSERT INTO bank_user(
 	  	user_key, 
@@ -13,14 +21,34 @@
 	  	name, 
 	  	birth_day)
 	  VALUES (
-	  	${user_key},
-	  	${user_id},
-	  	${user_password},
-	  	${type},
-	  	${name},
-	  	${birth_day})
+	  	bank_user_sequence.NEXTVAL,
+	  	#{user_id},
+	  	#{user_password},
+	  	'Employee',
+	  	#{name},
+	  	#{birth_day})
   </insert> 
    
+  <!-- 해당 유저가 일반 직원인지 확인 -->
+  <select id="verifyEmployee" parameterType="String" resultType="int">
+	  SELECT count(*) 
+	  FROM bank_user
+	  WHERE user_id = #{user_id} and type= 'Employee'
+  </select>
+   
+  <!-- 관리자 권한으로 변경 -->
+  <update id="makeManager" parameterType="String">
+	  UPDATE bank_user 
+	  SET type='Manager' 
+	  WHERE user_id = #{targetEmployee}
+  </update>
+  
+  <!-- 일반 직원으로 변경 -->
+  <update id="giveUpManager" parameterType="String">
+  	  UPDATE bank_user 
+	  SET type='Employee' 
+	  WHERE user_id = #{user}
+  </update>
 </mapper>
 
 
