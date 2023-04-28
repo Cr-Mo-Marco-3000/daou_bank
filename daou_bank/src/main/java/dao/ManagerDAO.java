@@ -9,7 +9,7 @@ public class ManagerDAO {
 	// 중복확인
 	public int isDuplicatedEmployee (SqlSession session, String userId) {
 		int n = 0;
-		n = session.selectOne("selectEmployeeId", userId);
+		n = session.selectOne("mybatis.ManagerMapper.selectEmployeeId", userId);
 		return n;
 	}
 	

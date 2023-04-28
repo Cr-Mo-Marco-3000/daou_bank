@@ -38,6 +38,7 @@ public class Menu {
 	
 	// 진입점
 	public void init() {
+		
 		loginMenu();
 	}
 
