@@ -385,8 +385,7 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃ ");
 		System.out.println("  ┃                 *");
 		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
-		
-		
+			
 	}
 	
 	

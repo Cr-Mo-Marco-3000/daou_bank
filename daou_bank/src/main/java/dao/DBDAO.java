@@ -44,10 +44,11 @@ public class DBDAO {
 		// 로그인 정보가 DB에 존재하는지 확인하는 메서드
 		public boolean check_login_user_db(SqlSession session, UserDTO dto) {
 			
-			boolean is_user_in_db = true;
+			boolean is_user_in_db = false;
 			List<UserDTO>select_check_user = session.selectList("User_check", dto);	
+			System.out.println(select_check_user.size());
 			if (select_check_user.size() != 0)
-				is_user_in_db = false;
+				is_user_in_db = true;
 			return is_user_in_db;
 		}
 
