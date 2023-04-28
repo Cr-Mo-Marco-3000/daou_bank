@@ -17,6 +17,14 @@
 	  where account_num = #{account_num}
 	</update>
 	
+ 	<!-- 특정 기능에 사용되는 SQL이 아니라, 시스템 전반에 사용되는 SQL문을 작성합니다.-->
+   	
+   	<!-- 일주일 지난 임시 계좌 날리는 쿼리문-->
+   <delete id="deleteOutdatedTemporaryAccount">
+	   DELETE FROM Account 
+	   WHERE is_temporary = 1
+	   AND TO_DATE(SYSDATE, 'yyyy-mm-dd') - TO_DATE(CREATE_DATE, 'yyyy-mm-dd') >= 7
+   </delete>
 </mapper>
 
 
