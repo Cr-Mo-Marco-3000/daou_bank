@@ -11,6 +11,7 @@ import controller.UserATM_Impl;
 import controller.UserJoin_Impl;
 import dto.AccountDTO;
 import dto.UserDTO;
+import exception.DeleteEmployeeFailException;
 import exception.EmployeeCreationFailException;
 import exception.HandOverManagerException;
 
@@ -37,6 +38,7 @@ public class Menu {
 	
 	// 진입점
 	public void init() {
+		
 		loginMenu();
 	}
 
@@ -75,6 +77,7 @@ public class Menu {
 					break;
 					
 				case ("3"):
+					// 임시 회원 => 나중에 삭제 요망
 					loginedUser = new UserDTO(
 							1, "bizyoung93", "123123", "Manager", "김현영", "1993/03/29");
 					EmployeeView();
@@ -197,22 +200,45 @@ public class Menu {
 				} else if (menu == 3) {
 					System.out.println("직원 등록을 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();
+					// 직원 정보 입력
+					System.out.println("직원 아이디를 입력해주세요");
+					String user_id = scan.next();
+					System.out.println("직원의 비밀번호를 입력해주세요");
+					String user_password = scan.next();
+					System.out.println("직원의 비밀번호 확인을 입력해주세요");
+					String user_password_confirm = scan.next();
+					System.out.println("직원의 이름을 입력해주세요");
+					String user_name = scan.next();
+					System.out.println("직원의 생일을 입력해주세요");
+					String user_birth_day = scan.next();
+					UserDTO user = new UserDTO(-1, user_id, user_password, "Employee", user_name, user_birth_day);
 					try {
-						service.registerEmployee(loginedUser);
+						service.registerEmployee(user);
 					} catch (EmployeeCreationFailException e) {
 						System.out.println(e.getMessage());
 					}
 				} else if (menu == 4) {
 					System.out.println("관리자 권한 인계를 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();
-					String targetEmployee = "bluefri0329";
+					System.out.println("인계하시려는 직원 아이디를 입력해주세요");
+					String targetEmployee = scan.next();
+					
 					try {
 						service.handOverManager(loginedUser, targetEmployee);
 					} catch (HandOverManagerException e) {
 						System.out.println(e.getMessage());
 					}
+					
 				} else if (menu == 5) {
 					System.out.println("직원 삭제를 선택하셨습니다.");
+					ManagerServiceImpl service = new ManagerServiceImpl();
+					System.out.println("삭제하시려는 직원 아이디를 입력해주세요");
+					String targetEmployee = scan.next();
+					try {
+						service.deleteEmployee(targetEmployee);
+					} catch (DeleteEmployeeFailException e) {
+						System.out.println(e.getMessage());
+					}
 				} else if (menu == 0) {
 					System.out.println("로그아웃을 선택하셨습니다.");
 					loginedUser = null;
