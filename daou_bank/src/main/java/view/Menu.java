@@ -1,5 +1,6 @@
 package view;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,6 @@ public class Menu {
 	// 로그인한 유저 데이터 담는 객체 생성
 	private static UserDTO loginedUser;
 	private static List<AccountDTO> login_User_account_list;
-	
 
 	// 싱글톤
 	private static Menu menu = new Menu();
@@ -45,7 +45,6 @@ public class Menu {
 	public void loginMenu() {
 		
 
-		
 		while(true) {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
@@ -69,7 +68,7 @@ public class Menu {
 			switch(menu) {
 			
 				case ("1"):
-					userJoin.userLogin();
+					userJoin.userLogin(loginedUser,login_User_account_list);
 
 					break;
 					
@@ -97,58 +96,75 @@ public class Menu {
 		
 		// 일반 유저가 로그인하면, 보이는 메뉴입니다. 
 
-		public void userView(Map<Integer, UserDTO> login_user_map, List<AccountDTO> login_user_account_list) {
-				while(true) {
-					System.out.println("");
-					System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
-					System.out.println("\t┃			┃");
-					System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
-					System.out.println("\t  ┃		      ┃");
-					System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
-					System.out.println("\t  ┃ 1) 계좌조회");
-					System.out.println("\t  ┃ 2) 입금 ");
-					System.out.println("\t  ┃ 3) 출금 ");
-					System.out.println("\t  ┃ 4) 계좌이체");
-					System.out.println("\t  ┃ 5) 통장정리");
-					System.out.println("\t  ┃ 0) 로그아웃");
-					System.out.println("\t  ┃     ");
-					System.out.print("\t  ┃ 메뉴 입력 : ");
-					String menu = scan.next();
-					System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
-					System.out.println("\t  ┃                   *");
-					System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-					System.out.println("");
+		public void userView(UserDTO userdto, List<AccountDTO> account_list) {
+
+			loginedUser = userdto;
+			login_User_account_list = account_list;
 				
-					switch(menu) {
-						case ("1"):
-							userImpl.userBalance();
-							break;
-								
-						case ("2"):
-							userImpl.userDeposit();
-							break;
+			while(true) {
+				System.out.println("");
+				System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+				System.out.println("\t┃			┃");
+				System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+				System.out.println("\t  ┃		      ┃");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+				System.out.println("\t  ┃ 1) 계좌조회");
+				System.out.println("\t  ┃ 2) 입금 ");
+				System.out.println("\t  ┃ 3) 출금 ");
+				System.out.println("\t  ┃ 4) 계좌이체");
+				System.out.println("\t  ┃ 5) 통장정리");
+				System.out.println("\t  ┃ 6) 계좌 개설 요청");
+				System.out.println("\t  ┃ 7) 마이 페이지");
+				System.out.println("\t  ┃ 0) 로그아웃");
+				System.out.println("\t  ┃     ");
+				System.out.print("\t  ┃ 메뉴 입력 : ");
+				String menu = scan.next();
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+				System.out.println("\t  ┃                   *");
+				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+				System.out.println("");
+			
+				switch(menu) {
+					
+					case ("1"):
+						userImpl.userBalance();
+						break;
+							
+					case ("2"):
+						userImpl.userDeposit();
+						break;
+					
+					case ("3"):
+						userImpl.userWithdraw();
+						break;
 						
-						case ("3"):
-							userImpl.userWithdraw();
-							break;
-							
-						case ("4"):
-							userImpl.userTransfer();
-							break;
-							
-						case ("5"):
-							userImpl.userHistory();
-							break;
-							
-						case ("0"): 
-							System.out.println("로그아웃 합니다.");
-							loginMenu();
-							break;
-						default:
-							System.out.println("없는 메뉴를 선택하셨습니다");
-							userView(login_user_map,login_user_account_list);
-					}	
-				}
+					case ("4"):
+						userImpl.userTransfer();
+						break;
+						
+					case ("5"):
+						userImpl.userHistory();
+						break;
+						
+					case ("6"):
+						userImpl.createAccount(loginedUser.getUser_key());
+						break;
+						
+					case ("7"):
+						userImpl.showInfo(loginedUser,login_User_account_list);
+					break;
+					
+					case ("0"): 
+						System.out.println("로그아웃 합니다.");
+						loginedUser = null;
+						login_User_account_list = null;
+						loginMenu();
+						break;
+					default:
+						System.out.println("없는 메뉴를 선택하셨습니다");
+						userView(loginedUser,login_User_account_list);
+				}	
+			}
 		}
 		
 		// 직원이 로그인하면 보이는 뷰
@@ -225,6 +241,9 @@ public class Menu {
 					}
 				} else if (menu == 0) {
 					System.out.println("로그아웃을 선택하셨습니다.");
+					loginedUser = null;
+					login_User_account_list = null;
+					loginMenu();
 					return;
 				} else {
 					System.out.println("없는 메뉴를 선택하셨습니다. 다시 입력해 주세요");

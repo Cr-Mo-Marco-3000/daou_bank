@@ -1,10 +1,17 @@
 package controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import dao.DBDAO;
 import dto.AccountDTO;
@@ -33,10 +40,28 @@ Menu menu = Menu.getInstance();
 		return userJoin;
 	}
 	
+	// SQL 세션을 위한 기본설정 =============================================================================
+	static SqlSessionFactory sqlSessionFactory;
+	
+	static {
+		String resource = "mybatis/Configuration.xml";
+		InputStream inputStream = null;
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		sqlSessionFactory =
+		  new SqlSessionFactoryBuilder().build(inputStream);
+	}
+	
+	
 	// ==================================================================================================================
 	// 회원 가입 메서드
 	@Override
 	public void userSignup() {
+		SqlSession session = sqlSessionFactory.openSession();
+		
 		System.out.println("");
 		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
 		System.out.println("\t┃        회 원 가 입      	┃");
@@ -49,7 +74,7 @@ Menu menu = Menu.getInstance();
 		String id = Menu.scan.next();	
 		if(id.equals("0")) return;
 		DBDAO dbcheck = new DBDAO();
-		if(dbcheck.check_Id(id)) {
+		if(dbcheck.check_Id(session, id)) {
 			System.out.println("\t  ┃ 중복된 아이디입니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -71,7 +96,7 @@ Menu menu = Menu.getInstance();
      /*회원가입 메소드 userSingup() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이되면*/
     /* 회원정보 저장 */ 
 		UserDTO userdto = new UserDTO(id,pw,name,birth_day);
-		if (dbcheck.check_login_user_db(userdto)) {
+		if (dbcheck.check_login_user_db(session, userdto)) {
 			System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -79,9 +104,8 @@ Menu menu = Menu.getInstance();
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
 			return;
 		}
-
 		
-		// 파일 유/무 판단 
+		
 		System.out.println("\t  ┃ 회원가입이 완료되었습니다.");
 		System.out.println("\t  ┃                 *");
 		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -90,38 +114,38 @@ Menu menu = Menu.getInstance();
 		
 	    /* 계좌정보 저장 */ 
 		DBDAO db_dao = new DBDAO();
-		db_dao.insert_user_db(userdto);
+		db_dao.insert_user_db(session,userdto);
+		session.close();
 	}
 
 	
 	// ==================================================================================================================
 	// 로그인
 	@Override
-	public void userLogin() {
+	public void userLogin(UserDTO loginedUser, List<AccountDTO> login_User_account_list ) {
+		SqlSession session = sqlSessionFactory.openSession();		
 		
 		System.out.println("아이디를 입력하세요:");
 		String id = Menu.scan.next();
 		System.out.println("비밀번호를 입력하세요:");
 		String pw = Menu.scan.next();
 		
-		Map<Integer, UserDTO> login_user_map = new HashMap<>();
-		List<AccountDTO> login_user_account_list = new ArrayList<>();
-		
 		UserDTO userdto = new UserDTO(id,pw);
 		
 		DBDAO db_login_dao = new DBDAO();
-		if(db_login_dao.check_login_user_db(userdto) ){	
-			login_user_map= db_login_dao.login_user_info(userdto);
-			login_user_account_list = db_login_dao.login_user_account(userdto);
-			System.out.println(id+"님 환영합니다.");		
+		if(db_login_dao.check_login_user_db(session, userdto) ){	
+			loginedUser = db_login_dao.login_user_info(session, userdto);
+			login_User_account_list = db_login_dao.login_user_account(session, loginedUser);
+			System.out.println(loginedUser.getName()+"님 환영합니다.");		
 			UserATM_Impl.userId = id;
-			menu.userView(login_user_map, login_user_account_list);
+			menu.userView(loginedUser,login_User_account_list);
 		}else {
 			System.out.println("아이디 & 비밀번호를 확인해주세요.");
 		}
+		session.close();
 		return;
 	}
-
+	
 	@Override
 	public void userList() {
 		/* 회원목록 */ 
@@ -135,8 +159,6 @@ Menu menu = Menu.getInstance();
 	
 	// ==================================================================================================================
 	// DB_check
-	
-	
 	
 	
 }
