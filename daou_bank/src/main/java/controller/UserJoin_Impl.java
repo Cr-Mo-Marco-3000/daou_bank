@@ -1,6 +1,5 @@
 package controller;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +11,6 @@ import dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import model.BankAccount;
-import model.User;
 import view.Menu;
 
 @Data
@@ -121,22 +118,5 @@ Menu menu = Menu.getInstance();
 		}
 		return;
 	}
-
-	@Override
-	public void userList() {
-		/* 회원목록 */ 
-		int count = 1;
-		for(String key:User.userMap.keySet()) {		
-			User value = User.userMap.get(key);	
-			System.out.printf("[%d] 번 고객님\n",count);
-			System.out.println(value.toList()); count++;
-		}
-	}
-	
-	// ==================================================================================================================
-	// DB_check
-	
-	
-	
 	
 }

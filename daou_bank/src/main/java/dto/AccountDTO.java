@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountDTO {
 
-	int account_num;		// primary_key
+	String account_num;		// primary_key
 	int user_key;			
 	int account_password;
 	int balance;
