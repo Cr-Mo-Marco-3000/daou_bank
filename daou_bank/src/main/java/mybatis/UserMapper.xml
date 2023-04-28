@@ -25,12 +25,18 @@
 		SELECT *
 		FROM BANK_USER
 		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}
-  </select> 
+  </select>
    
    <select id="Login_user_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
 		SELECT *
 		FROM ACCOUNT
-		WHERE USER_KEY = #{user_key}
+		WHERE USER_KEY = #{user_key} AND IS_TEMPORARY = 0;
+  </select> 
+   
+   <select id="Login_user_tmp_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
+		SELECT *
+		FROM ACCOUNT
+		WHERE USER_KEY = #{user_key} AND IS_TEMPORARY = 1;
   </select> 
    
 </mapper>

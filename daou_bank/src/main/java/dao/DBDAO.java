@@ -33,8 +33,7 @@ public class DBDAO {
 		}// static블럭 end
 		
 		// 동일한 아이디가 있는지 확인하는 메서드 (중복 ID 체크)
-		public boolean check_Id(String id) {
-			SqlSession session = sqlSessionFactory.openSession();
+		public boolean check_Id(SqlSession session, String id) {
 			boolean Is_in_userid = false;
 			List<UserDTO> select_check_id = session.selectList("ID_dupli_check",id);
 			if (select_check_id.size() != 0)
@@ -43,9 +42,8 @@ public class DBDAO {
 		}
 		
 		// 로그인 정보가 DB에 존재하는지 확인하는 메서드
-		public boolean check_login_user_db(UserDTO dto) {
+		public boolean check_login_user_db(SqlSession session, UserDTO dto) {
 			
-			SqlSession session = sqlSessionFactory.openSession();
 			boolean is_user_in_db = true;
 			List<UserDTO>select_check_user = session.selectList("User_check", dto);	
 			if (select_check_user.size() != 0)
@@ -55,34 +53,40 @@ public class DBDAO {
 
 		
 		// 회원가입이 완료된 사용자의 정보를 DB에 저장하는 메서드
-		public int insert_user_db(UserDTO dto) {
+		public int insert_user_db(SqlSession session, UserDTO dto) {
 			int n = 0;
-			SqlSession session = sqlSessionFactory.openSession();
 			n = session.insert("User_sign_up", dto);
 			session.commit();
 			return n;
 		}
 		
-		
-		// 로그인 정보의 (User_key, User) Map를 반환하는 메서드
-		public Map<Integer, UserDTO> login_user_info(UserDTO dto) {
+		// 로그인 정보의 UserDTO를 반환하는 메서드
+		public UserDTO login_user_info(SqlSession session, UserDTO dto) {
 			
-			SqlSession session = sqlSessionFactory.openSession();
-			Map<Integer, UserDTO> user_info_map = new HashMap<>();
-			UserDTO login_user_info = session.selectOne("Login_user_info_Map", dto);
-			user_info_map.put(login_user_info.getUser_key(), login_user_info);
-						
-			return user_info_map;
+			UserDTO login_user_info = session.selectOne("Login_user_info_Map", dto);			
+			return login_user_info;
 		}
 		
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
-		public List<AccountDTO> login_user_account(UserDTO dto) {
-			
-			SqlSession session = sqlSessionFactory.openSession();
+		public List<AccountDTO> login_user_account(SqlSession session, UserDTO dto) {
 			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",dto);
-
+			System.out.println(login_user_account_lst.toString());
 			return login_user_account_lst;
 		}
+				
+		// 로그인 정보의 [ tmp_Account0, tmp_Account1, ... ] 리스트를 반환하는 메서드
+		public List<AccountDTO> login_user_tmp_account(SqlSession session, UserDTO dto) {
+			List <AccountDTO> login_user_tmp_account_lst = session.selectList("Login_user_tmp_account_list",dto);
+			System.out.println(login_user_tmp_account_lst.toString());
+			return login_user_tmp_account_lst;
+		}
 		
-			
+		// 개설 요청 계좌를 DB에 저장하는 메서드
+		public int insert_account_db(SqlSession session, AccountDTO dto) {
+			int n = 0;
+			n = session.insert("Account_create", dto);
+			session.commit();
+			return n;
+		}
+					
 }

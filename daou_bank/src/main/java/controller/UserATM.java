@@ -1,5 +1,10 @@
 package controller;
 
+import java.util.List;
+
+import dto.AccountDTO;
+import dto.UserDTO;
+
 public interface UserATM {
 
 	public void init();
@@ -12,4 +17,8 @@ public interface UserATM {
 	public void userHistory(); 			// 통장정리
 	
 	public void userAccount(String account, int balance);  // 입금 / 출금
+	public void createAccount(int user_key); // 계좌 생성 요청
+	
+	public void showInfo(UserDTO loginedUser, List<AccountDTO> login_User_account_list);
+
 }

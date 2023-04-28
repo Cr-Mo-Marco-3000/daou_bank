@@ -1,10 +1,19 @@
 package controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
-import dao.BankDAO;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
 import dao.DBDAO;
+import dao.BankDAO;
 import dto.AccountDTO;
 import dto.TransactionDTO;
 import dto.UserDTO;
@@ -32,6 +41,31 @@ public class UserATM_Impl implements UserATM {
 	public static BankDAO bankDAO = new BankDAO();
 	
 	Menu menu = Menu.getInstance();
+
+	public static UserATM_Impl getInstance() {
+		if(userImpl == null) {
+			userImpl = new UserATM_Impl();
+		}
+		return userImpl;
+	}
+	
+	
+	// SQL 세션을 위한 기본설정 =============================================================================
+	static SqlSessionFactory sqlSessionFactory;
+	
+	static {
+		String resource = "mybatis/Configuration.xml";
+		InputStream inputStream = null;
+		try {
+			inputStream = Resources.getResourceAsStream(resource);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		sqlSessionFactory =
+		  new SqlSessionFactoryBuilder().build(inputStream);
+	}
+	// ----------------------------------------------------------------------------
+	
 	
 	@Override
 	public void init() {
@@ -109,7 +143,7 @@ public class UserATM_Impl implements UserATM {
 			String accountNum = Menu.scan.next();
 			boolean check = false;
 			
-			for(AccountDTO key : dbDAO.login_user_account(userDTO)) {		
+			for(AccountDTO key : dbDAO.login_user_account(null, userDTO)) {		
 				if(accountNum.equals(key.getAccount_num())) {
 					name = userDTO.getName();
 					check = true; 
@@ -318,6 +352,39 @@ public class UserATM_Impl implements UserATM {
 		init();
 	}
 
+	public void createAccount(int user_key) {
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		Scanner scan_pw = new Scanner(System.in);
+		
+		int input_pw;
+		int input_pw_check;
+		AccountDTO account_tmp = null;
+		System.out.println("개설할 계좌의 비밀번호를 입력해주세요");
+		input_pw = scan_pw.nextInt();
+		System.out.println("비밀번호 확인");
+		input_pw_check = scan_pw.nextInt();
+		
+		if (input_pw != input_pw_check) {
+			System.out.println("비밀번호가 일치하지 않습니다.");
+		} else {			
+			account_tmp = new AccountDTO(user_key, input_pw);
+		}
+		
+		DBDAO db_create_dao = new DBDAO();
+		int n = 0;
+		n = db_create_dao.insert_account_db(session, account_tmp);
+		if (n == 0) {
+			//throw Exception()
+		}
+		else {
+			System.out.println("계좌 개설 요청이 완료되었습니다. \n");
+			session.commit();
+		}
+		session.close();
+	}
+	
+
 	@Override
 	public boolean userCheckPassWord(String pw) {
 		if(userPw.equals(pw)) {
@@ -327,4 +394,44 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("비밀번호가 일치하지 않습니다.");
 		return false;
 	}
+
+	@Override
+	public void showInfo(UserDTO loginedUser, List<AccountDTO> login_User_account_list) {
+		int account_cnt = 0;
+		int account_tmp_cnt = 0;
+		int account_balance_total_sum = 0;		
+		
+		System.out.printf("      [%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
+		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━* ");
+		System.out.println("  ┃  개인 정보 ");
+		System.out.println("  ┃  ");
+		System.out.println("  ┃    Name : " + loginedUser.getName());
+		System.out.printf("  ┃    Birth : %s 년 %s 월 %s 일\n",loginedUser.getBirth_day().substring(0,4), loginedUser.getBirth_day().substring(5,7),loginedUser.getBirth_day().substring(8,10));
+		System.out.println("  ┃ ========================");
+		System.out.println("  ┃  계좌 정보 ");
+		System.out.println("  ┃  ");
+		for(AccountDTO dto: login_User_account_list) {
+			account_cnt+=1;
+			account_balance_total_sum += dto.getBalance();
+			System.out.printf("  ┃  %d 번째 계좌", account_cnt);
+			System.out.println("  ┃  계좌번호 : " + dto.getAccount_num());
+			System.out.println("  ┃  잔고 : " + dto.getBalance());
+			System.out.println("  ┃  생성날짜 : " + dto.getCreate_date());
+			System.out.println("  ┃  - - - - - - - - - - - - - - -" );			
+		}
+		if (account_cnt == 0)
+			System.out.println("  ┃      계좌가 [텅] 비어있습니다.");
+		System.out.println("  ┃ ========================");
+		System.out.println("  ┃ ");
+		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + account_balance_total_sum + "원 입니다." );
+		System.out.println("  ┃ ");
+		System.out.println("  ┃                 *");
+		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+		
+		
+	}
+	
+	
+	
+	
 }

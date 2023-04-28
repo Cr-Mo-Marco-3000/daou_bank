@@ -32,7 +32,6 @@ public class ManagerServiceImpl implements ManagerService {
 		  new SqlSessionFactoryBuilder().build(inputStream);
 	}
 	
-	
 	// 직원 등록
 	@Override
 	public int registerEmployee (UserDTO user) throws EmployeeCreationFailException {
@@ -92,6 +91,7 @@ public class ManagerServiceImpl implements ManagerService {
 		}
 		return num;
 	};
+	
 	
 	// 직원 삭제
 	@Override
