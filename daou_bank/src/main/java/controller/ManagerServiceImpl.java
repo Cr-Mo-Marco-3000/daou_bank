@@ -32,6 +32,20 @@ public class ManagerServiceImpl implements ManagerService {
 		  new SqlSessionFactoryBuilder().build(inputStream);
 	}
 	
+	// 직원 중복 확인
+	@Override
+	public int isDuplicaedEmployee(String user) {
+		int num = 0;
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			ManagerDAO dao = new ManagerDAO();
+			// 중복 아이디 확인
+			num = dao.isDuplicatedEmployee(session, user);
+		} finally {
+			session.close();
+		}
+		return num;
+	}
 	
 	// 직원 등록
 	@Override
@@ -40,17 +54,15 @@ public class ManagerServiceImpl implements ManagerService {
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			ManagerDAO dao = new ManagerDAO();
-			// 중복 아이디 확인
-			num = dao.isDuplicatedEmployee(session, user.getUser_id());
-			if (num == 1) {
-				throw new EmployeeCreationFailException("중복되는 아이디가 있습니다.");
-			}
 			// 직원 등록
 			num = dao.registerEmployee(session, user);
+			System.out.println(num);
 			if (num == 0) {
 				throw new EmployeeCreationFailException("직원 등록에 실패했습니다.");
 			}
 			session.commit();
+		} catch (Exception e) {
+			throw new EmployeeCreationFailException("직원 등록에 실패했습니다.");
 		} finally {
 			session.rollback();
 			session.close();

@@ -1,9 +1,13 @@
 package view;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import controller.ManagerServiceImpl;
 import controller.UserATM_Impl;
@@ -184,13 +188,32 @@ public class Menu {
 				} else if (menu == 3) {
 					System.out.println("직원 등록을 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();
+					
 					// 직원 정보 입력
-					System.out.println("직원 아이디를 입력해주세요");
-					String user_id = scan.next();
-					System.out.println("직원의 비밀번호를 입력해주세요");
-					String user_password = scan.next();
-					System.out.println("직원의 비밀번호 확인을 입력해주세요");
-					String user_password_confirm = scan.next();
+					String user_id = "";
+					int checkNum = 2;
+					while (checkNum == 2 || checkNum == 1) {
+						if (checkNum == 2) {
+							System.out.println("직원 아이디를 입력해주세요");
+						} else { 
+							System.out.println("중복되는 아이디가 존재합니다. 다시 입력해주세요");
+						}
+						user_id = scan.next();
+						checkNum = service.isDuplicaedEmployee(user_id);
+					};
+					
+					String user_password = "";
+					String user_password_confirm = "";
+					int flag = 1;
+					do {
+						if (flag == 0) System.out.println("비밀번호가 일치하지 않습니다. 다시 입력해주세요");
+						System.out.println("직원의 비밀번호를 입력해주세요");
+						user_password = scan.next();
+						System.out.println("직원의 비밀번호 확인을 입력해주세요");
+						user_password_confirm = scan.next();
+						flag = 0;
+					} while (!user_password.equals(user_password_confirm));
+					
 					System.out.println("직원의 이름을 입력해주세요");
 					String user_name = scan.next();
 					System.out.println("직원의 생일을 입력해주세요");

@@ -6,6 +6,8 @@ import exception.EmployeeCreationFailException;
 import exception.HandOverManagerException;
 
 public interface ManagerService {
+	public abstract int isDuplicaedEmployee(String user);
+	
 	public abstract int registerEmployee (UserDTO user) throws EmployeeCreationFailException;
 	
 	public abstract int handOverManager (UserDTO user, String targetEmployee) throws HandOverManagerException;
