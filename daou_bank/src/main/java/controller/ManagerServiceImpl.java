@@ -31,7 +31,6 @@ public class ManagerServiceImpl {
 		  new SqlSessionFactoryBuilder().build(inputStream);
 	}
 	
-	
 	// 직원 등록
 	public int registerEmployee (UserDTO user) throws EmployeeCreationFailException{
 		int num = 0;
@@ -89,7 +88,6 @@ public class ManagerServiceImpl {
 		}
 		return num;
 	};
-	
 	
 	
 	// 직원 삭제

@@ -104,7 +104,7 @@ Menu menu = Menu.getInstance();
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
 			return;
 		}
-
+		
 		
 		System.out.println("\t  ┃ 회원가입이 완료되었습니다.");
 		System.out.println("\t  ┃                 *");
@@ -135,7 +135,7 @@ Menu menu = Menu.getInstance();
 		DBDAO db_login_dao = new DBDAO();
 		if(db_login_dao.check_login_user_db(session, userdto) ){	
 			loginedUser = db_login_dao.login_user_info(session, userdto);
-			login_User_account_list = db_login_dao.login_user_account(session, userdto);
+			login_User_account_list = db_login_dao.login_user_account(session, loginedUser);
 			System.out.println(loginedUser.getName()+"님 환영합니다.");		
 			UserATM_Impl.userId = id;
 			menu.userView(loginedUser,login_User_account_list);

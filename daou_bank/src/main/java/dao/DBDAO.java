@@ -69,9 +69,16 @@ public class DBDAO {
 		
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
 		public List<AccountDTO> login_user_account(SqlSession session, UserDTO dto) {
-			
 			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",dto);
+			System.out.println(login_user_account_lst.toString());
 			return login_user_account_lst;
+		}
+				
+		// 로그인 정보의 [ tmp_Account0, tmp_Account1, ... ] 리스트를 반환하는 메서드
+		public List<AccountDTO> login_user_tmp_account(SqlSession session, UserDTO dto) {
+			List <AccountDTO> login_user_tmp_account_lst = session.selectList("Login_user_tmp_account_list",dto);
+			System.out.println(login_user_tmp_account_lst.toString());
+			return login_user_tmp_account_lst;
 		}
 		
 		// 개설 요청 계좌를 DB에 저장하는 메서드

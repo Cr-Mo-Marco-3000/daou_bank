@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -355,9 +356,13 @@ public class UserATM_Impl implements UserATM {
 	@Override
 	public void showInfo(UserDTO loginedUser, List<AccountDTO> login_User_account_list) {
 		int account_cnt = 0;
-		System.out.printf("[%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
-		System.out.println("  ┏━━━* ");
+		int account_tmp_cnt = 0;
+		int account_balance_total_sum = 0;		
+		
+		System.out.printf("      [%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
+		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━* ");
 		System.out.println("  ┃  개인 정보 ");
+		System.out.println("  ┃  ");
 		System.out.println("  ┃    Name : " + loginedUser.getName());
 		System.out.printf("  ┃    Birth : %s 년 %s 월 %s 일\n",loginedUser.getBirth_day().substring(0,4), loginedUser.getBirth_day().substring(5,7),loginedUser.getBirth_day().substring(8,10));
 		System.out.println("  ┃ ========================");
@@ -365,15 +370,21 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃  ");
 		for(AccountDTO dto: login_User_account_list) {
 			account_cnt+=1;
+			account_balance_total_sum += dto.getBalance();
 			System.out.printf("  ┃  %d 번째 계좌", account_cnt);
 			System.out.println("  ┃  계좌번호 : " + dto.getAccount_num());
 			System.out.println("  ┃  잔고 : " + dto.getBalance());
 			System.out.println("  ┃  생성날짜 : " + dto.getCreate_date());
 			System.out.println("  ┃  - - - - - - - - - - - - - - -" );			
 		}
+		if (account_cnt == 0)
+			System.out.println("  ┃      계좌가 [텅] 비어있습니다.");
+		System.out.println("  ┃ ========================");
+		System.out.println("  ┃ ");
+		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + account_balance_total_sum + "원 입니다." );
 		System.out.println("  ┃ ");
 		System.out.println("  ┃                 *");
-		System.out.println("  ┗━━━━━━━━━━━━━━━━━┛\n");
+		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
 		
 		
 	}
