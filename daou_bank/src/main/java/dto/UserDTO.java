@@ -36,6 +36,4 @@ public class UserDTO {
 		this.birth_day = "";
 	}
 	
-	
-	
 }

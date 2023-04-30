@@ -57,10 +57,3 @@
 	   WHERE user_id = #{user}
    </delete>
 </mapper>
-
-
-
-
-
-
-
