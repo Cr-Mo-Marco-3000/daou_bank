@@ -34,13 +34,15 @@ public class ManagerServiceImpl implements ManagerService {
 	
 	// 직원 중복 확인
 	@Override
-	public int isDuplicaedEmployee(String user) {
+	public int isDuplicatedEmployee(String user) throws EmployeeCreationFailException {
 		int num = 0;
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			ManagerDAO dao = new ManagerDAO();
 			// 중복 아이디 확인
 			num = dao.isDuplicatedEmployee(session, user);
+		} catch (Exception e) {
+			throw new EmployeeCreationFailException("직원 등록에 실패했습니다.");
 		} finally {
 			session.close();
 		}
@@ -81,7 +83,6 @@ public class ManagerServiceImpl implements ManagerService {
 			if (num == 0) {
 				throw new HandOverManagerException("해당 아이디를 가진 직원이 없습니다.");
 			}
-			
 			num = dao.verifyEmployee(session, targetEmployee);
 			if (num == 0) {
 				throw new HandOverManagerException("해당 유저는 일반 직원이 아닙니다.");
