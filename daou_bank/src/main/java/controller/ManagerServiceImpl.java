@@ -42,7 +42,7 @@ public class ManagerServiceImpl implements ManagerService {
 			// 중복 아이디 확인
 			num = dao.isDuplicatedEmployee(session, user);
 		} catch (Exception e) {
-			throw new EmployeeCreationFailException("직원 등록에 실패했습니다.");
+			throw new EmployeeCreationFailException("알 수 없는 에러가 발생했습니다. 나중에 다시 시도해 주세요.");
 		} finally {
 			session.close();
 		}
@@ -58,13 +58,12 @@ public class ManagerServiceImpl implements ManagerService {
 			ManagerDAO dao = new ManagerDAO();
 			// 직원 등록
 			num = dao.registerEmployee(session, user);
-			System.out.println(num);
 			if (num == 0) {
 				throw new EmployeeCreationFailException("직원 등록에 실패했습니다.");
 			}
 			session.commit();
 		} catch (Exception e) {
-			throw new EmployeeCreationFailException("직원 등록에 실패했습니다.");
+			throw new EmployeeCreationFailException("알 수 없는 에러가 발생했습니다. 나중에 다시 시도해 주세요.");
 		} finally {
 			session.rollback();
 			session.close();
@@ -87,7 +86,6 @@ public class ManagerServiceImpl implements ManagerService {
 			if (num == 0) {
 				throw new HandOverManagerException("해당 유저는 일반 직원이 아닙니다.");
 			}
-			
 			num = dao.makeManager(session, targetEmployee);
 			if (num == 0) {
 				throw new HandOverManagerException("직원을 관리자로 만들 수 없습니다.");
