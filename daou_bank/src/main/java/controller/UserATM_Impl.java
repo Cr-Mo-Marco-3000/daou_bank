@@ -227,7 +227,7 @@ public class UserATM_Impl implements UserATM {
 		System.out.println();
 		//menu.userView();		
 	}
-	
+
 	@Override
 	public void userReceipt() {
 
@@ -284,7 +284,6 @@ public class UserATM_Impl implements UserATM {
 					String formatCash = df.format(cash);
 					String formatBalance = df.format(money);
 				
-					
 					System.out.printf("[%d] 번 거래내역\n",count);
 					System.out.println("  ┏━━━* "+check);
 					System.out.println("  ┃ ");
@@ -311,15 +310,17 @@ public class UserATM_Impl implements UserATM {
 		SqlSession session = sqlSessionFactory.openSession();
 		Scanner scan_pw = new Scanner(System.in);
 		
-		int input_pw;
-		int input_pw_check;
+		String input_pw;
+		String input_pw_check;
 		AccountDTO account_tmp = null;
 		System.out.println("개설할 계좌의 비밀번호를 입력해주세요");
-		input_pw = scan_pw.nextInt();
+		input_pw = scan_pw.nextLine();
+		System.out.println(input_pw);
 		System.out.println("비밀번호 확인");
-		input_pw_check = scan_pw.nextInt();
+		input_pw_check = scan_pw.next();
+		System.out.println(input_pw);
 		
-		if (input_pw != input_pw_check) {
+		if (input_pw.equals( input_pw_check )) {
 			System.out.println("비밀번호가 일치하지 않습니다.");
 		} else {			
 			account_tmp = new AccountDTO(user_key, input_pw);
@@ -327,7 +328,9 @@ public class UserATM_Impl implements UserATM {
 		
 		DBDAO db_create_dao = new DBDAO();
 
-		//account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
+		System.out.println(account_tmp.getAccount_password());
+		account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
+		System.out.println(account_tmp.getAccount_password());
 		String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
 		account_tmp.setAccount_num(account_tmp_num);
 		
@@ -351,6 +354,7 @@ public class UserATM_Impl implements UserATM {
 		BankAccount.bankMap.put(account,bank);
 		bank.setBankFile();	
 		init();
+		
 	}
 
 	@Override
@@ -378,7 +382,6 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃ ========================");
 		System.out.println("  ┃  계좌 정보 ");
 		System.out.println("  ┃  ");
-
 		
 		for(AccountDTO dto: login_User_account_list) {
 			account_cnt+=1;
@@ -411,10 +414,7 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃ ");
 		System.out.println("  ┃                 *");
 		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
-			
+		
 	}
-	
-	
-	
 	
 }
