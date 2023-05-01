@@ -6,7 +6,17 @@
 	
    <insert id = "Account_create" parameterType = "dto.AccountDTO">
    		INSERT INTO ACCOUNT(ACCOUNT_NUM, ACCOUNT_PASSWORD,IS_TEMPORARY,BALANCE, CREATE_DATE, USER_KEY)
-   		VALUES(#{account_num},#{account_password},#{is_temporary},#{balance},TO_DATE(#{create_date},'YYYYMMDD'),#{user_key})
+   		VALUES( #{account_num},#{account_password},#{is_temporary},#{balance},TO_DATE(#{create_date},'YYYYMMDD'),#{user_key})
    </insert>
+   
+   <select id = "create_account_tmp_num" parameterType="String" resultType = "String">
+	   WITH create_account_num AS(
+			SELECT 
+			#{account_num} AS tmp_account_num,
+			(SELECT DISTINCT COUNT(*)+1 FROM ACCOUNT) AS account_total_cnt
+			FROM DUAL
+			)
+			select concat(SUBSTR(TMP_ACCOUNT_NUM,1,LENGTH(TMP_ACCOUNT_NUM)-LENGTH(ACCOUNT_TOTAL_CNT+1)),ACCOUNT_TOTAL_CNT) from create_account_num 
+  </select>
   
 </mapper>

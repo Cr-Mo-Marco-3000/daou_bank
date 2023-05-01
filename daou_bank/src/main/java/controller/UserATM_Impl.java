@@ -7,6 +7,10 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.ibatis.io.Resources;
@@ -322,8 +326,13 @@ public class UserATM_Impl implements UserATM {
 		}
 		
 		DBDAO db_create_dao = new DBDAO();
+
+		String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
+		account_tmp.setAccount_num(account_tmp_num);
+		
 		int n = 0;
 		n = db_create_dao.insert_account_db(session, account_tmp);
+		
 		if (n == 0) {
 			//throw Exception()
 		}
@@ -368,18 +377,34 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃ ========================");
 		System.out.println("  ┃  계좌 정보 ");
 		System.out.println("  ┃  ");
+
+		
 		for(AccountDTO dto: login_User_account_list) {
 			account_cnt+=1;
 			account_balance_total_sum += dto.getBalance();
-			System.out.printf("  ┃  %d 번째 계좌", account_cnt);
-			System.out.println("  ┃  계좌번호 : " + dto.getAccount_num());
-			System.out.println("  ┃  잔고 : " + dto.getBalance());
-			System.out.println("  ┃  생성날짜 : " + dto.getCreate_date());
-			System.out.println("  ┃  - - - - - - - - - - - - - - -" );			
+			if (dto.getIs_temporary().equals("0")) {
+				System.out.printf("  ┃  %d 번째 계좌", account_cnt);
+				System.out.println("  ┃  계좌번호 : " + dto.getAccount_num());
+				System.out.println("  ┃  잔고 : " + dto.getBalance());
+				System.out.println("  ┃  생성날짜 : " + dto.getCreate_date());
+				System.out.println("  ┃  - - - - - - - - - - - - - - -" );			
+			}
 		}
-		if (account_cnt == 0)
-			System.out.println("  ┃      계좌가 [텅] 비어있습니다.");
 		System.out.println("  ┃ ========================");
+		System.out.println("  ┃ ");
+		System.out.println("  ┃  계좌 개설 요청 정보 ");
+
+		AtomicInteger tmp_index = new AtomicInteger();
+		Predicate<AccountDTO> is_tmp_account = dto -> dto.getIs_temporary().equals("1");
+		Consumer<AccountDTO> print_account_tmp = dto -> System.out.println("  ┃  " + (tmp_index.getAndIncrement()+1) + "번쨰 생성 요청 ---\n  ┃    생성 요청 일자 : " + dto.getCreate_date().toString() + "\n");
+		Stream <AccountDTO> account_stream = login_User_account_list.stream();
+				
+		account_stream.filter(is_tmp_account).forEach(print_account_tmp);
+		
+		System.out.println("  ┃ ========================");
+		if (account_cnt == 0) {
+			System.out.println("  ┃  계좌가 [텅] 비어있습니다.");
+		}
 		System.out.println("  ┃ ");
 		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + account_balance_total_sum + "원 입니다." );
 		System.out.println("  ┃ ");

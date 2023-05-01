@@ -96,7 +96,8 @@ Menu menu = Menu.getInstance();
      /*회원가입 메소드 userSingup() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이되면*/
     /* 회원정보 저장 */ 
 		UserDTO userdto = new UserDTO(id,pw,name,birth_day);
-		if (dbcheck.check_login_user_db(session, userdto)) {
+		
+		if (dbcheck.check_dupli_user_db(session, userdto)) {
 			System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -131,12 +132,13 @@ Menu menu = Menu.getInstance();
 		String pw = Menu.scan.next();
 		
 		UserDTO userdto = new UserDTO(id,pw);
-		
 		DBDAO db_login_dao = new DBDAO();
-		if(db_login_dao.check_login_user_db(session, userdto) ){	
-			loginedUser = db_login_dao.login_user_info(session, userdto);
+
+		loginedUser = db_login_dao.login_user_info(session, userdto);
+
+		if(loginedUser != null ){	
 			login_User_account_list = db_login_dao.login_user_account(session, loginedUser);
-			System.out.println(loginedUser.getName()+"님 환영합니다.");		
+			System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
 			UserATM_Impl.userId = id;
 			menu.userView(loginedUser,login_User_account_list);
 		}else {

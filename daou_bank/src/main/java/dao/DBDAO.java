@@ -41,10 +41,12 @@ public class DBDAO {
 			return Is_in_userid;
 		}
 		
+		
 		// 로그인 정보가 DB에 존재하는지 확인하는 메서드
-		public boolean check_login_user_db(SqlSession session, UserDTO dto) {
+		public boolean check_dupli_user_db(SqlSession session, UserDTO dto) {
 			
 			boolean is_user_in_db = false;
+			System.out.println(dto);
 			List<UserDTO>select_check_user = session.selectList("User_check", dto);	
 			System.out.println(select_check_user.size());
 			if (select_check_user.size() != 0)
@@ -89,5 +91,15 @@ public class DBDAO {
 			session.commit();
 			return n;
 		}
+		
+		// 개설 요청을 위한 임시 계좌번호를 생성하는 메서드
+		public String create_tmp_account_num(SqlSession session, AccountDTO dto) {
+			String tmp_account_num = "";
+			tmp_account_num = session.selectOne("create_account_tmp_num", dto.getAccount_num());
+			return tmp_account_num;
+		}
+		
+		
+		
 					
 }
