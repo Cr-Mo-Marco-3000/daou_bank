@@ -30,7 +30,7 @@ public class Menu {
 	public static UserJoin_Impl userJoin = new UserJoin_Impl();
 	
 	// 로그인한 유저 데이터 담는 객체 생성
-	private static UserDTO loginedUser;
+	private static UserDTO loginedUser = new UserDTO();
 
 	// 싱글톤
 	private static Menu menu = new Menu();
@@ -87,6 +87,7 @@ public class Menu {
 					EmployeeView();
 					break;
 				case ("0"): 
+					loginedUser = null;
 					System.out.println("Good Bye *");	
 					System.exit(0);return;
 					

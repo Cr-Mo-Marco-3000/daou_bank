@@ -151,7 +151,12 @@ Menu menu = Menu.getInstance();
 			if(loginedUser != null ){	
 				System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
 				UserATM_Impl.userId = id;
-				menu.userView(loginedUser);
+				if (loginedUser.getType().equals("Customer")) {
+					menu.userView(loginedUser);
+				}
+				else {
+					menu.EmployeeView();
+				}
 			}else {
 				System.out.println("아이디 & 비밀번호를 확인해주세요.");
 			}

@@ -443,7 +443,7 @@ public class UserATM_Impl implements UserATM {
 		DBDAO user_account_dao = new DBDAO();
 		List<AccountDTO> login_User_account_list = user_account_dao.login_user_account(session, loginedUser.getUser_key());
 		
-		System.out.println(login_User_account_list);
+		DecimalFormat df = new DecimalFormat("###,###");
 		
 		System.out.printf("      [%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
 		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━* ");
@@ -461,7 +461,7 @@ public class UserATM_Impl implements UserATM {
 			if (dto.getIs_temporary().equals("0")) {
 				System.out.printf("  ┃  %d 번째 계좌", account_cnt);
 				System.out.println("  ┃  계좌번호 : " + dto.getAccount_num());
-				System.out.println("  ┃  잔고 : " + dto.getBalance());
+				System.out.println("  ┃  잔고 : " + df.format(dto.getBalance()));
 				System.out.println("  ┃  생성날짜 : " + dto.getCreate_date());
 				System.out.println("  ┃  - - - - - - - - - - - - - - -" );			
 			}
@@ -482,7 +482,7 @@ public class UserATM_Impl implements UserATM {
 			System.out.println("  ┃  계좌가 [텅] 비어있습니다.");
 		}
 		System.out.println("  ┃ ");
-		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + account_balance_total_sum + "원 입니다." );
+		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + df.format(account_balance_total_sum) + "원 입니다." );
 		System.out.println("  ┃ ");
 		System.out.println("  ┃                 *");
 		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
