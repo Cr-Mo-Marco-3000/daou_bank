@@ -125,7 +125,6 @@ public class Menu {
 				System.out.println("");
 			
 				switch(menu) {
-					
 					case ("1"):
 						userImpl.userBalance();
 						break;
