@@ -27,7 +27,7 @@
 		VALUES (bank_user_sequence.NEXTVAL, #{user_id}, #{user_password},'Customer',#{name},TO_DATE(#{birth_day},'YYYYMMDD'))
   </insert>
 
-  <select id="Login_user_info_Map" parameterType="dto.UserDTO" resultType = "dto.UserDTO" >
+  <select id="Login_user_info" parameterType="dto.UserDTO" resultType = "dto.UserDTO" >
 		SELECT *
 		FROM BANK_USER
 		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}

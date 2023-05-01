@@ -327,6 +327,7 @@ public class UserATM_Impl implements UserATM {
 		
 		DBDAO db_create_dao = new DBDAO();
 
+		//account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
 		String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
 		account_tmp.setAccount_num(account_tmp_num);
 		

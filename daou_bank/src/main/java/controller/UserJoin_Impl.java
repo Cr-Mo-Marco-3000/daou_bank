@@ -115,6 +115,10 @@ Menu menu = Menu.getInstance();
 		
 	    /* 계좌정보 저장 */ 
 		DBDAO db_dao = new DBDAO();
+		System.out.println(userdto.getUser_password());
+		userdto.setUser_password(db_dao.Encryptonize_pw(userdto.getUser_password(),db_dao.create_random_seed()));		
+		System.out.println(userdto.getUser_password());
+		
 		db_dao.insert_user_db(session,userdto);
 		session.close();
 	}
@@ -133,7 +137,7 @@ Menu menu = Menu.getInstance();
 		
 		UserDTO userdto = new UserDTO(id,pw);
 		DBDAO db_login_dao = new DBDAO();
-
+		userdto.setUser_password(db_login_dao.Encryptonize_pw(userdto.getUser_password(), db_login_dao.create_random_seed()));
 		loginedUser = db_login_dao.login_user_info(session, userdto);
 
 		if(loginedUser != null ){	

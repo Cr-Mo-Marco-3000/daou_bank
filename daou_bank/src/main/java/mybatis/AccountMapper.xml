@@ -16,7 +16,7 @@
 			(SELECT DISTINCT COUNT(*)+1 FROM ACCOUNT) AS account_total_cnt
 			FROM DUAL
 			)
-			select concat(SUBSTR(TMP_ACCOUNT_NUM,1,LENGTH(TMP_ACCOUNT_NUM)-LENGTH(ACCOUNT_TOTAL_CNT+1)),ACCOUNT_TOTAL_CNT) from create_account_num 
+			select concat(SUBSTR(TMP_ACCOUNT_NUM,1,LENGTH(TMP_ACCOUNT_NUM)-LENGTH(ACCOUNT_TOTAL_CNT)),ACCOUNT_TOTAL_CNT) from create_account_num 
   </select>
   
 </mapper>

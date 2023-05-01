@@ -19,7 +19,7 @@ import dto.UserDTO;
 public class DBDAO {
 
 		// 아모와를 위한 랜덤 시드 생성
-		private String seed = "19860109";
+		private String seed_by_dba = "19860109";
 		
 		// SQL 세션 생성 ===========================================
 		static SqlSessionFactory sqlSessionFactory;
@@ -52,7 +52,7 @@ public class DBDAO {
 			
 			boolean is_user_in_db = false;
 			System.out.println(dto);
-			List<UserDTO>select_check_user = session.selectList("User_check", dto);	
+			List<UserDTO>select_check_user = session.selectList("User_check_sign_up", dto);	
 			System.out.println(select_check_user.size());
 			if (select_check_user.size() != 0)
 				is_user_in_db = true;
@@ -71,7 +71,7 @@ public class DBDAO {
 		// 로그인 정보의 UserDTO를 반환하는 메서드
 		public UserDTO login_user_info(SqlSession session, UserDTO dto) {
 			
-			UserDTO login_user_info = session.selectOne("Login_user_info_Map", dto);			
+			UserDTO login_user_info = session.selectOne("Login_user_info", dto);			
 			return login_user_info;
 		}
 		
@@ -106,13 +106,14 @@ public class DBDAO {
 		
 		
 	   // 암호화를 위한 Random Seed 발생
-		  private int create_random_seed(String seed) {
-			  int str_len = seed.length();
+		  public int create_random_seed() {
+			  int str_len = seed_by_dba.length();
 			  int tmp=0;
 			  String tmp_str = "";
+			  tmp_str = str_len+""+seed_by_dba;
 			  for (int c_idx = 0 ; c_idx < str_len;c_idx++) {
 				  if (c_idx %2 ==0) {
-					  tmp+=Integer.parseInt(""+seed.charAt(c_idx));
+					  tmp+=Integer.parseInt("" + tmp_str.charAt(c_idx));
 				  }
 			  }
 			  while(tmp>10) {
@@ -122,25 +123,39 @@ public class DBDAO {
 					  tmp += Integer.parseInt("" + tmp_str.charAt(idx));
 				  }
 			  }
+			  System.out.println(tmp);
 			  return tmp;
 		  }
 		  
 	   // 암호화하는 메서드
-		  private String Encryptonize_pw(String input_pw, int seed) {
+		  public String Encryptonize_pw(String input_pw, int seed) {
+			  System.out.println(input_pw);
+			  
 			  char []ch_pw_token = input_pw.toCharArray();
+			  String Encrypt_pw;
+			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  token-=seed;
-			  }
-			  return String.valueOf(ch_pw_token);
+				  ch_pw_token[idx]-=6;
+				  idx++;
+				  }
+			  Encrypt_pw = String.valueOf(ch_pw_token);
+			  System.out.println(Encrypt_pw);
+			  
+			  
+			  return Encrypt_pw;
 		  }
 		  		  
 	   // 복호화하는 메서드
-		  private String Decryptonize_pw(String db_pw, int seed) {
+		  public String Decryptonize_pw(String db_pw, int seed) {
 			  char []ch_pw_token = db_pw.toCharArray();
+			  String Decrypt_pw;
+			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  token+=seed;
+				  ch_pw_token[idx]+=6;
+				  idx++;
 			  }
-			  return String.valueOf(ch_pw_token);
+			  Decrypt_pw = String.valueOf(ch_pw_token);
+			  return String.valueOf(Decrypt_pw );
 		  }
 
 	  
