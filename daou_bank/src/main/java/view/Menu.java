@@ -32,7 +32,6 @@ public class Menu {
 	
 	// 로그인한 유저 데이터 담는 객체 생성
 	private static UserDTO loginedUser;
-	private static List<AccountDTO> login_User_account_list;
 
 	// 싱글톤
 	private static Menu menu = new Menu();
@@ -56,6 +55,7 @@ public class Menu {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
 			System.out.println("\t┃			┃");
+			System.out.println("\t┃			");
 			System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
@@ -75,7 +75,7 @@ public class Menu {
 			switch(menu) {
 			
 				case ("1"):
-					userJoin.userLogin(loginedUser,login_User_account_list);
+					userJoin.userLogin(loginedUser);
 					break;
 					
 				case ("2"):
@@ -94,17 +94,15 @@ public class Menu {
 					
 				default:
 					System.out.println("다시 입력해주세요 :)");
-				}	
-			
-			
-			}
+			}	
+		
 		}
+	}
 		
 	// 일반 유저가 로그인하면, 보이는 메뉴입니다. 
-	public void userView(UserDTO userdto, List<AccountDTO> account_list) {
+	public void userView(UserDTO userdto) {
 
 		loginedUser = userdto;
-		login_User_account_list = account_list;
 			
 		while(true) {
 			System.out.println("");
@@ -131,23 +129,22 @@ public class Menu {
 		
 			switch(menu) {
 				case ("1"):
-					userImpl.userBalance();
+					userImpl.userBalance(loginedUser);
 					break;
 						
 				case ("2"):
-					userImpl.userDeposit();
+					userImpl.userDeposit(userdto);
 					break;
 				
 				case ("3"):
-					userImpl.userWithdraw();
+					userImpl.userWithdraw(loginedUser);
 					break;
-					
 				case ("4"):
-					userImpl.userTransfer();
+					userImpl.userTransfer(loginedUser);
 					break;
 					
 				case ("5"):
-					userImpl.userHistory();
+					userImpl.userHistory(loginedUser);
 					break;
 					
 				case ("6"):
@@ -155,18 +152,18 @@ public class Menu {
 					break;
 					
 				case ("7"):
-					userImpl.showInfo(loginedUser,login_User_account_list);
-				break;
+					userImpl.showInfo(loginedUser);
+					break;
 				
 				case ("0"): 
 					System.out.println("로그아웃 합니다.");
 					loginedUser = null;
-					login_User_account_list = null;
 					loginMenu();
 					break;
+					
 				default:
 					System.out.println("없는 메뉴를 선택하셨습니다");
-					userView(loginedUser,login_User_account_list);
+					userView(loginedUser);
 			}	
 		}
 	}
@@ -349,7 +346,6 @@ public class Menu {
 			}  else if (menu == 0) {
 				System.out.println("로그아웃을 선택하셨습니다.");
 				loginedUser = null;
-				login_User_account_list = null;
 				loginMenu();
 				return;
 			} else {
