@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class UserDTO {
 	int user_key;		// primary_key
 	String user_id;		// user_id
@@ -35,5 +35,14 @@ public class UserDTO {
 		this.name = "";
 		this.birth_day = "";
 	}
-	
+	 public String getUserId() {
+	        return user_id;
+	    }
+
+
+	public UserDTO(String user_id2) {
+		// TODO Auto-generated constructor stub
+	}
+
+	 
 }

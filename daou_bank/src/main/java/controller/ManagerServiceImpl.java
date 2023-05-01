@@ -1,22 +1,19 @@
 package controller;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
 import dao.ManagerDAO;
 import dto.UserDTO;
 import exception.DeleteEmployeeFailException;
 import exception.EmployeeCreationFailException;
 import exception.HandOverManagerException;
-
 public class ManagerServiceImpl implements ManagerService {
+
 	// 기본설정
 	static SqlSessionFactory sqlSessionFactory;
 	
