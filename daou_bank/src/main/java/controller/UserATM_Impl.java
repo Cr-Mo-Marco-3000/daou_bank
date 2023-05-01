@@ -27,6 +27,7 @@ public class UserATM_Impl implements UserATM {
 
 	public String accountNumber; 	// 계좌번호
 	public String userName; 		// 회원 이름
+	public int userKey; 			// 회원키
 	public static String userId; 	// 회원 아이디
 	public String userPw; 			// 회원 비번
 	public String bank; 			// 계좌조회 , 영수증 변수
@@ -37,7 +38,6 @@ public class UserATM_Impl implements UserATM {
 	public static UserATM_Impl userImpl = new UserATM_Impl();
 	public static UserJoin_Impl userJoin = new UserJoin_Impl();
 	
-	public static UserDTO userDTO = new UserDTO();
 	public static AccountDTO accountDTO = new AccountDTO();
 	public static TransactionDTO transactionDTO = new TransactionDTO();
 	
@@ -70,24 +70,19 @@ public class UserATM_Impl implements UserATM {
 	}
 	// ----------------------------------------------------------------------------
 	
-	
 	@Override
-	public void init() {
-		this.accountNumber = accountDTO.getAccount_num();
-		this.userName = userDTO.getName();
-		this.userId = userDTO.getUser_id();
-		this.userPw = userDTO.getUser_password();
-		this.balance = accountDTO.getBalance();
-	}
-	
-	@Override
-	public void userBalance() {
+	public void userBalance(UserDTO userDTO, List<AccountDTO> account_list) {
+		SqlSession session = sqlSessionFactory.openSession();
+		account_list = dbDAO.login_user_account(session, userDTO.getUser_key());
+		
 		this.bank = "Balance";		
-		userReceipt();
+		userReceipt(userDTO, account_list);
 	}
 
 	@Override
-	public void userWithdraw() {
+	public void userWithdraw(UserDTO userDTO, List<AccountDTO> account_list) {
+		SqlSession session = sqlSessionFactory.openSession();
+		account_list = dbDAO.login_user_account(session, userDTO.getUser_key());
 		
 		System.out.print("출금하실 금액을 입력해주세요. [취소:0] :");
 		try {
@@ -104,10 +99,12 @@ public class UserATM_Impl implements UserATM {
 				return;
 			}
 			/* 계좌 저장 */
-			userAccount(accountNumber, balance-money);		
+			for(AccountDTO dto : account_list) 
+				userAccount(dto.getAccount_num(), balance-money);		
 			
 			/* 영수증 */
-			userReceipt();
+			userReceipt(userDTO, account_list);
+			
 		}catch(Exception e) {
 			System.out.println("잘못 입력하셨습니다.");
 			return;
@@ -115,7 +112,10 @@ public class UserATM_Impl implements UserATM {
 	}
 
 	@Override
-	public void userDeposit() {
+	public void userDeposit(UserDTO userDTO, List<AccountDTO> account_list) {
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		account_list = dbDAO.login_user_account(session, userDTO.getUser_key());
 		
 		System.out.print("입금하실 금액을 입력해주세요 [취소:0] :");
 		try {
@@ -127,10 +127,11 @@ public class UserATM_Impl implements UserATM {
 				return;
 			}		
 			/* 계좌 저장 */
-			userAccount(accountNumber, balance+money);	
+			for(AccountDTO dto : account_list) 
+				userAccount(dto.getAccount_num(), balance+money);	
 			
 			/* 영수증 */
-			userReceipt();
+			userReceipt(userDTO, account_list);
 			
 		}catch(Exception e) {
 			System.out.println("잘못 입력하셨습니다.");
@@ -139,7 +140,7 @@ public class UserATM_Impl implements UserATM {
 	}
 
 	@Override
-	public void userTransfer() {
+	public void userTransfer(UserDTO userDTO, List<AccountDTO> account_list) {
 		
 		System.out.println("입금하실 계좌를 입력하세요.");
 		try {
@@ -147,7 +148,7 @@ public class UserATM_Impl implements UserATM {
 			String accountNum = Menu.scan.next();
 			boolean check = false;
 			
-			for(AccountDTO key : dbDAO.login_user_account(null, userDTO)) {		
+			for(AccountDTO key : account_list) {		
 				if(accountNum.equals(key.getAccount_num())) {
 					name = userDTO.getName();
 					check = true; 
@@ -166,7 +167,7 @@ public class UserATM_Impl implements UserATM {
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 			System.out.println("\t  ┃                 *");
-			System.out.println("\t  ┃ 받으실분의 계좌 : " + accountDTO);
+			System.out.println("\t  ┃ 받으실분의 계좌 : " + accountNum);
 			System.out.println("\t  ┃ 받으실분의 성함 : " + name);
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -197,7 +198,7 @@ public class UserATM_Impl implements UserATM {
 				System.out.println("\t  ┃		      ┃");
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 				System.out.println("\t  ┃                 *");
-				System.out.println("\t  ┃ 받으실분의 계좌 : " + accountDTO);
+				System.out.println("\t  ┃ 받으실분의 계좌 : " + accountNum);
 				System.out.println("\t  ┃ 받으실분의 성함 : " + name);
 				System.out.println("\t  ┃ 송금 금액 : " + formatMoney + "원");
 				System.out.println("\t  ┃                 *");
@@ -221,7 +222,8 @@ public class UserATM_Impl implements UserATM {
 				userAccount(accountNum, cash + money);	
 				
 				/* 보낸사람의 계좌, 금액 - */
-				userAccount(accountDTO.getAccount_num(), balance - money); 
+				for(AccountDTO dto : account_list) 
+					userAccount(dto.getAccount_num(), balance - money);	
 				
 				try {
 					Thread.sleep(1000);
@@ -229,7 +231,7 @@ public class UserATM_Impl implements UserATM {
 					e.printStackTrace();
 				}
 				
-				userReceipt();
+				userReceipt(userDTO, account_list);
 			}catch(Exception e) {
 				System.out.println("잘못 입력하셨습니다.");
 				return;
@@ -240,38 +242,9 @@ public class UserATM_Impl implements UserATM {
 		}
 		System.out.println();
 	}
-	
-	@Override
-	public void userReceipt() {
 
-		this.bank = "Receipt";
-		DecimalFormat df = new DecimalFormat("###,###");
-		String formatMoney = df.format(balance);
-		
-		System.out.println("");
-		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
-		System.out.println("\t┃	     " + bank + "	┃");
-		System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
-		System.out.println("\t  ┃		      ┃");
-		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
-		System.out.println("\t  ┃                 *");
-		System.out.println("\t  ┃ 계좌번호 : A"+accountNumber);
-		System.out.println("\t  ┃    성함 : "+userName);
-		System.out.println("\t  ┃    잔액 : "+formatMoney+"원");
-		System.out.println("\t  ┃ ");
-		System.out.println("\t  ┃ [0] 확인 ");
-		System.out.println("\t  ┃                 *");
-		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
-		System.out.println("\t  ┃                   *");
-		System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-		System.out.println("");
-		
-		String sel = Menu.scan.next();
-		if(sel.equals("0")) return;
-	}
-	
 	@Override
-	public void userHistory() {
+	public void userHistory(UserDTO userDTO, List<AccountDTO> account_list) {
 		
 		try {
 			
@@ -348,12 +321,12 @@ public class UserATM_Impl implements UserATM {
 	@Override
 	public void userAccount(String account, int balance) {
 		
-		this.accountNumber = account;
-		this.balance = balance;
+		AccountDTO dto = new AccountDTO();
 		
-		bankDAO.updateBalance(accountDTO);
+		dto.setAccount_num(account);
+		dto.setBalance(balance);
 		
-		init();
+		bankDAO.updateBalance(dto);
 	}
 
 	public void createAccount(int user_key) {
@@ -361,15 +334,17 @@ public class UserATM_Impl implements UserATM {
 		SqlSession session = sqlSessionFactory.openSession();
 		Scanner scan_pw = new Scanner(System.in);
 		
-		int input_pw;
-		int input_pw_check;
+		String input_pw;
+		String input_pw_check;
 		AccountDTO account_tmp = null;
 		System.out.println("개설할 계좌의 비밀번호를 입력해주세요");
-		input_pw = scan_pw.nextInt();
+		input_pw = scan_pw.nextLine();
+		System.out.println(input_pw);
 		System.out.println("비밀번호 확인");
-		input_pw_check = scan_pw.nextInt();
+		input_pw_check = scan_pw.next();
+		System.out.println(input_pw);
 		
-		if (input_pw != input_pw_check) {
+		if (!input_pw.equals( input_pw_check )) {
 			System.out.println("비밀번호가 일치하지 않습니다.");
 		} else {			
 			account_tmp = new AccountDTO(user_key, input_pw);
@@ -377,7 +352,9 @@ public class UserATM_Impl implements UserATM {
 		
 		DBDAO db_create_dao = new DBDAO();
 
-		//account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
+		System.out.println(account_tmp.getAccount_password());
+		account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
+		System.out.println(account_tmp.getAccount_password());
 		String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
 		account_tmp.setAccount_num(account_tmp_num);
 		
@@ -393,7 +370,6 @@ public class UserATM_Impl implements UserATM {
 		}
 		session.close();
 	}
-	
 
 	@Override
 	public boolean userCheckPassWord(String pw) {
@@ -420,7 +396,6 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃ ========================");
 		System.out.println("  ┃  계좌 정보 ");
 		System.out.println("  ┃  ");
-
 		
 		for(AccountDTO dto: login_User_account_list) {
 			account_cnt+=1;
@@ -453,10 +428,41 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("  ┃ ");
 		System.out.println("  ┃                 *");
 		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
-			
+		
 	}
 	
-	
-	
-	
+	@Override
+	public void userReceipt(UserDTO userDTO, List<AccountDTO> account_list) {
+		
+		for(AccountDTO dto : account_list) {
+			this.accountNumber = dto.getAccount_num();	
+		}
+
+		this.userName = userDTO.getName();
+
+		this.bank = "Receipt";
+		DecimalFormat df = new DecimalFormat("###,###");
+		String formatMoney = df.format(balance);
+		
+		System.out.println("");
+		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+		System.out.println("\t┃	   " + bank + "	┃");
+		System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+		System.out.println("\t  ┃		      ┃");
+		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+		System.out.println("\t  ┃                 *");
+		System.out.println("\t  ┃ 계좌번호 : "+accountNumber);
+		System.out.println("\t  ┃    성함 : "+userName);
+		System.out.println("\t  ┃    잔액 : "+formatMoney+"원");
+		System.out.println("\t  ┃ ");
+		System.out.println("\t  ┃ [0] 확인 ");
+		System.out.println("\t  ┃                 *");
+		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+		System.out.println("\t  ┃                   *");
+		System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+		System.out.println("");
+		
+		String sel = Menu.scan.next();
+		if(sel.equals("0")) return;
+	}
 }

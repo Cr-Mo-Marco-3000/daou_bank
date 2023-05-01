@@ -49,6 +49,7 @@ public class Menu {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
 			System.out.println("\t┃			┃");
+			System.out.println("\t┃			");
 			System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
@@ -69,7 +70,7 @@ public class Menu {
 			
 				case ("1"):
 					userJoin.userLogin(loginedUser,login_User_account_list);
-
+					System.out.println(loginedUser);
 					break;
 					
 				case ("2"):
@@ -127,23 +128,23 @@ public class Menu {
 				switch(menu) {
 					
 					case ("1"):
-						userImpl.userBalance();
+						userImpl.userBalance(loginedUser, login_User_account_list);
 						break;
 							
 					case ("2"):
-						userImpl.userDeposit();
+						userImpl.userDeposit(loginedUser, login_User_account_list);
 						break;
 					
 					case ("3"):
-						userImpl.userWithdraw();
+						userImpl.userWithdraw(loginedUser, login_User_account_list);
 						break;
 						
 					case ("4"):
-						userImpl.userTransfer();
+						userImpl.userTransfer(loginedUser, login_User_account_list);
 						break;
 						
 					case ("5"):
-						userImpl.userHistory();
+						userImpl.userHistory(loginedUser, login_User_account_list);
 						break;
 						
 					case ("6"):

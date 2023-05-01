@@ -76,8 +76,8 @@ public class DBDAO {
 		}
 		
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
-		public List<AccountDTO> login_user_account(SqlSession session, UserDTO dto) {
-			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",dto);
+		public List<AccountDTO> login_user_account(SqlSession session, int userKey) {
+			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list", userKey);
 			System.out.println(login_user_account_lst.toString());
 			return login_user_account_lst;
 		}
@@ -135,7 +135,7 @@ public class DBDAO {
 			  String Encrypt_pw;
 			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  ch_pw_token[idx]-=6;
+				  ch_pw_token[idx]-=seed;
 				  idx++;
 				  }
 			  Encrypt_pw = String.valueOf(ch_pw_token);

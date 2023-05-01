@@ -139,7 +139,7 @@ Menu menu = Menu.getInstance();
 		loginedUser = db_login_dao.login_user_info(session, userdto);
 
 		if(loginedUser != null ){	
-			login_User_account_list = db_login_dao.login_user_account(session, loginedUser);
+			login_User_account_list = db_login_dao.login_user_account(session, loginedUser.getUser_key());
 			System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
 			UserATM_Impl.userId = id;
 			menu.userView(loginedUser,login_User_account_list);

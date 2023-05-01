@@ -33,7 +33,7 @@
 		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}
   </select>
    
-   <select id="Login_user_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
+   <select id="Login_user_account_list" parameterType="int" resultType = "dto.AccountDTO" >
 		SELECT *
 		FROM ACCOUNT
 		WHERE USER_KEY = #{user_key}
