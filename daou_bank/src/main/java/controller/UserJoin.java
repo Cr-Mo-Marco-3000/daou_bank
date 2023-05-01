@@ -8,5 +8,5 @@ import dto.UserDTO;
 public interface UserJoin {
 	
 	public void userSignup();
-	public void userLogin(UserDTO loginedUser );
+	public void userLogin(UserDTO loginedUser);
 }
