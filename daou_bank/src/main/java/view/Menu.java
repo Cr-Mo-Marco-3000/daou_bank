@@ -76,7 +76,6 @@ public class Menu {
 			
 				case ("1"):
 					userJoin.userLogin(loginedUser,login_User_account_list);
-
 					break;
 					
 				case ("2"):
@@ -132,7 +131,6 @@ public class Menu {
 				System.out.println("");
 			
 				switch(menu) {
-					
 					case ("1"):
 						userImpl.userBalance();
 						break;
@@ -357,7 +355,44 @@ public class Menu {
 						} else {
 							System.out.println("없는 메뉴를 선택하셨습니다. 다시 입력해 주세요");
 						}
-
+					} while (flag == 0);
+					
+					UserDTO user = new UserDTO(-1, user_id, user_password, "Employee", user_name, user_birth_day);
+					try {
+						service.registerEmployee(user);
+					} catch (EmployeeCreationFailException e) {
+						System.out.println(e.getMessage());
+					}
+					
+				} else if (menu == 4) {
+					System.out.println("관리자 권한 인계를 선택하셨습니다.");
+					ManagerServiceImpl service = new ManagerServiceImpl();
+					System.out.println("인계하시려는 직원 아이디를 입력해주세요");
+					String targetEmployee = scan.next();
+					try {
+						service.handOverManager(loginedUser, targetEmployee);
+					} catch (HandOverManagerException e) {
+						System.out.println(e.getMessage());
+					}
+				} else if (menu == 5) {
+					System.out.println("직원 삭제를 선택하셨습니다.");
+					ManagerServiceImpl service = new ManagerServiceImpl();
+					System.out.println("삭제하시려는 직원 아이디를 입력해주세요");
+					String targetEmployee = scan.next();
+					try {
+						service.deleteEmployee(targetEmployee);
+					} catch (DeleteEmployeeFailException e) {
+						System.out.println(e.getMessage());
+					}
+				} else if (menu == 0) {
+					System.out.println("로그아웃을 선택하셨습니다.");
+					loginedUser = null;
+					login_User_account_list = null;
+					loginMenu();
+					return;
+				} else {
+					System.out.println("없는 메뉴를 선택하셨습니다. 다시 입력해 주세요");
+				}
 			}
 		}
 		
