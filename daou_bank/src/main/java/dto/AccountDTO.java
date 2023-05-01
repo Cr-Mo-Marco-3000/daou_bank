@@ -24,7 +24,7 @@ public class AccountDTO {
 		Calendar cal = Calendar.getInstance();
 		
 		this.user_key = user_key;
-		this.account_num = "000-000-000000";
+		this.account_num = "tmp-000-000000";
 		this.account_password = password;
 		this.balance = 0;
 		this.is_temporary = "1";
