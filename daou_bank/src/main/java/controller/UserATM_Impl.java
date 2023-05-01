@@ -365,11 +365,9 @@ public class UserATM_Impl implements UserATM {
 		String input_pw_check;
 		AccountDTO account_tmp = null;
 		System.out.println("개설할 계좌의 비밀번호를 입력해주세요");
-		input_pw = scan_pw.nextLine();
-		System.out.println(input_pw);
+		input_pw = scan_pw.next();
 		System.out.println("비밀번호 확인");
 		input_pw_check = scan_pw.next();
-		System.out.println(input_pw_check);
 		
 		if (!input_pw.equals(input_pw_check)) {
 			System.out.println("비밀번호가 일치하지 않습니다.");
