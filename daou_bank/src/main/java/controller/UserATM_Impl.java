@@ -436,7 +436,6 @@ public class UserATM_Impl implements UserATM {
 	@Override
 	public void showInfo(UserDTO loginedUser) {
 		int account_cnt = 0;
-		int account_tmp_cnt = 0;
 		int account_balance_total_sum = 0;		
 		
 		
