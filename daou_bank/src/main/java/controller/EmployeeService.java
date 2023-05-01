@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
+import dto.AccountDTO;
 import dto.UserDTO;
 import exception.AccountRequestNotFoundException;
 import exception.AllCustomerInfocheckFailException;
@@ -15,9 +16,8 @@ import exception.DuplicateCustomerException;
 
 public interface EmployeeService { 
 
-
-    List<UserDTO> getAccountRequests(String isTemporary) throws AccountRequestNotFoundException, AllCustomerInfocheckFailException;
-
+	List<AccountDTO> getAccountRequests() throws AccountRequestNotFoundException; 
+	
     int registerCustomer(UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException; 
 
     void approveCustomer(String user_id) throws CustomerAccountApprovalException;

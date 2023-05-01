@@ -27,7 +27,6 @@ import exception.HandOverManagerException;
 public class Menu {
 
 	public static Scanner scan = new Scanner(System.in);
-	
 	public static UserATM_Impl userImpl = new UserATM_Impl();
 	public static UserJoin_Impl userJoin = new UserJoin_Impl();
 	
@@ -208,15 +207,12 @@ public class Menu {
 						if (menu == 1) { 
 						    System.out.println("계좌 생성 요구 조회를 선택하셨습니다.");
 						    EmployeeServiceImpl service = new EmployeeServiceImpl();
-						    String isTemporary = scan.nextLine(); // isTemporary 변수에 값을 할당
 						    try {
-						        boolean isTemp = "1".equals(isTemporary) ? true : false;
-						        service.getAccountRequests(isTemp ? "1" : "0"); // isTemp 값에 따라서 "temporary" 또는 "regular"을 인자로 전달
+						        service.getAccountRequests(); 
 						    } catch (AccountRequestNotFoundException e) {
 						        System.out.println(e.getMessage());
-						    } catch (Exception e) {
-						        System.out.println("잘못된 입력값입니다. 1 또는 0을 입력해주세요.");
-						    }
+						    } 
+						    
 						} else if (menu == 2) {
 							System.out.println("고객 등록을 선택하셨습니다.");
 							EmployeeServiceImpl service = new EmployeeServiceImpl();
@@ -234,7 +230,7 @@ public class Menu {
 							System.out.println("고객 정보 열람을 선택하셨습니다.");
 							EmployeeServiceImpl service = new EmployeeServiceImpl();
 							String user_id = scan.nextLine(); // user_id 변수에 값을 할당
-							try {
+							try { 
 								service.getCustomerById(user_id);
 							} catch (CustomerInfocheckFailException e) {
 								System.out.println(e.getMessage());

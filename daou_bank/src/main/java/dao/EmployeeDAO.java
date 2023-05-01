@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
+import dto.AccountDTO;
 import dto.UserDTO;
 import exception.AccountRequestNotFoundException;
 import exception.CustomerEnrolFailException;
@@ -13,18 +14,13 @@ public class EmployeeDAO {
 	
 
 	// 계좌 생성 요구 조회 
-	public List<UserDTO> getAccountRequests(SqlSession session, String isTemporary) {
-	    List<UserDTO> userList = null;
-	    if ("1".equals(isTemporary)) {
-	        // 1이면 임시계좌 조회
-	        userList = session.selectList("mybatis.EmployeeMapper.getAccountRequests", true);
-	    } else {
-	        // 0이면 실제 계좌 생성 요청 조회
-	        userList = session.selectList("mybatis.EmployeeMapper.getAccountRequests", false);
-	    }
-	    return userList;
+	public List<AccountDTO> getAccountRequests(SqlSession session) {
+	    List<AccountDTO> accountList = null;
+	    accountList = session.selectList("mybatis.EmployeeMapper.getAccountRequests");
+	    return accountList;
 	}
 	
+
 
 	// 고객 등록
 	public int registerCustomer(SqlSession session, UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException {

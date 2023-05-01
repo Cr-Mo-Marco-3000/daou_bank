@@ -3,26 +3,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 	<mapper namespace="mybatis.EmployeeMapper">
-  
+   
 		  <!-- 계좌 생성 요구 조회 -->
-		  <select id="getAccountRequests" resultMap="accountRequestResult">
+		  <select id="getAccountRequests" resultType="dto.AccountDTO">
 		    SELECT *
 		    FROM account
-		    WHERE is_temporary = #{isTemporary}
+		    WHERE is_temporary = '1'
 		  </select> 
-
-		  <!-- 결과를 매핑하는 resultMap 정의 -->
-		  <!-- resultMap은 SQL 쿼리 결과를 자바 객체로 매핑하기 위한 설정 -->
-		  <!--  DB에서 조회한 데이터를 자동으로 Java 객체로 변환 -->
-		  <!-- property는 임의의 변수명 (테이블 컬럼명과 무관)  -->
-		  <resultMap id="accountRequestResult" type="mybatis.EmployeeMapper.UserDTO">
-		    <id property="id" column="id"/>
-		    <result property="userId" column="user_id"/>
-		    <!-- is_temporary 컬럼의 값을 isTemporary 변수에 매핑 -->
-		    <result property="isTemporary" column="is_temporary"/>
-		    <result property="createDate" column="create_date"/> 
-		  </resultMap>
-
+		  
  			
 		  <!-- 고객 등록 -->
 		  <!-- <insert> 태그를 이용해 등록할 고객의 정보를 bank_user 테이블에 삽입 -->
@@ -72,16 +60,10 @@
 		  
 
 		  <!-- 전체 회원 정보 조회 -->
-		  <select id="getAllCustomers" resultMap="CustomerResult">
+		  <select id="getAllCustomers" resultType="mybatis.EmployeeMapper.UserDTO">
 		    SELECT *
 		    FROM bank_user 
 		  </select>
-		  
-		  <resultMap id="CustomerResult" type="mybatis.EmployeeMapper.CustomerResult">
-		    <id property="user_id" column="user_id"/>
-		    <result property="user_key" column="user_key"/>
-		    <result property="name" column="name"/>
-		    <result property="birth_day" column="birth_day"/>
-		  </resultMap>
+		
 		  
 	</mapper>
