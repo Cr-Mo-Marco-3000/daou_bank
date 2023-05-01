@@ -58,7 +58,10 @@ Menu menu = Menu.getInstance();
 	// 회원 가입 메서드
 	@Override
 	public void userSignup() {
+		
 		SqlSession session = sqlSessionFactory.openSession();
+		UserDTO userdto = new UserDTO();
+		DBDAO db_dao = new DBDAO();
 		
 		System.out.println("");
 		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
@@ -71,8 +74,8 @@ Menu menu = Menu.getInstance();
 		System.out.print("\t  ┃  ID : ");
 		String id = Menu.scan.next();	
 		if(id.equals("0")) return;
-		DBDAO dbcheck = new DBDAO();
-		if(dbcheck.check_Id(session, id)) {
+		
+		if(db_dao.check_Id(session, id)) {
 			System.out.println("\t  ┃ 중복된 아이디입니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -91,36 +94,40 @@ Menu menu = Menu.getInstance();
 		if(birth_day.equals("0")) return;
 		System.out.println("\t  ┃ ");
 
-     /*회원가입 메소드 userSingup() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이되면*/
-    /* 회원정보 저장 */ 
-		UserDTO userdto = new UserDTO(id,pw,name,birth_day);
 		
-		if (dbcheck.check_dupli_user_db(session, userdto)) {
-			System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
+		try {
+			/* 회원정보 저장 */ 
+			userdto = new UserDTO(id,pw,name,birth_day);
+			/*회원가입 메소드 userSingup() 에서 중복된 아이디가 있으면*/
+			if (db_dao.check_dupli_user_db(session, userdto)) {
+				System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
+				System.out.println("\t  ┃                 *");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+				System.out.println("\t  ┃                   *");
+				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+				return;
+			}
+			
+			/*회원가입 메소드 userSingup() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이 되면*/
+			System.out.println("\t  ┃ 회원가입이 완료되었습니다.");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
 			System.out.println("\t  ┃                   *");
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-			return;
+
+			/* 계좌정보 저장 */ 
+			userdto.setUser_password(db_dao.Encryptonize_pw(userdto.getUser_password(),db_dao.create_random_seed()));		
+			db_dao.insert_user_db(session,userdto);
+			session.commit();
+			
+		} catch(Exception e) {
+			System.out.println("회원가입 정보가 잘 못 되었습니다.");
+			session.rollback();
+		} finally {
+			session.close();
 		}
 		
-		
-		System.out.println("\t  ┃ 회원가입이 완료되었습니다.");
-		System.out.println("\t  ┃                 *");
-		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
-		System.out.println("\t  ┃                   *");
-		System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-		
-	    /* 계좌정보 저장 */ 
-		DBDAO db_dao = new DBDAO();
-		System.out.println(userdto.getUser_password());
-		userdto.setUser_password(db_dao.Encryptonize_pw(userdto.getUser_password(),db_dao.create_random_seed()));		
-		System.out.println(userdto.getUser_password());
-		
-		db_dao.insert_user_db(session,userdto);
-		session.close();
 	}
-
 	
 	// ==================================================================================================================
 	// 로그인
@@ -130,28 +137,30 @@ Menu menu = Menu.getInstance();
 		SqlSession session = sqlSessionFactory.openSession();		
 		
 		DBDAO user_login_dao = new DBDAO();
-		List<AccountDTO> login_User_account_list;
-
+		UserDTO userdto;
 		
 		System.out.println("아이디를 입력하세요:");
 		String id = Menu.scan.next();
 		System.out.println("비밀번호를 입력하세요:");
 		String pw = Menu.scan.next();
-		
-		UserDTO userdto = new UserDTO(id,pw);
-		
-		userdto.setUser_password(user_login_dao.Encryptonize_pw(userdto.getUser_password(), user_login_dao.create_random_seed()));
-		loginedUser = user_login_dao.login_user_info(session, userdto);
-		System.out.println(loginedUser);
-		if(loginedUser != null ){	
-			login_User_account_list = user_login_dao.login_user_account(session, loginedUser.getUser_key());
-			System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
-			UserATM_Impl.userId = id;
-			menu.userView(loginedUser);
-		}else {
-			System.out.println("아이디 & 비밀번호를 확인해주세요.");
+		try {
+			userdto = new UserDTO(id,pw);
+			userdto.setUser_password(user_login_dao.Encryptonize_pw(userdto.getUser_password(), user_login_dao.create_random_seed()));
+			loginedUser = user_login_dao.login_user_info(session, userdto);
+
+			if(loginedUser != null ){	
+				System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
+				UserATM_Impl.userId = id;
+				menu.userView(loginedUser);
+			}else {
+				System.out.println("아이디 & 비밀번호를 확인해주세요.");
+			}
+		} catch(Exception e) {
+			System.out.println("로그인 정보가 잘못 되었습니다. 다시 입력 해주세요. ");
+		} finally {
+			session.close();
 		}
-		session.close();
 		return;
+		
 	}
 }

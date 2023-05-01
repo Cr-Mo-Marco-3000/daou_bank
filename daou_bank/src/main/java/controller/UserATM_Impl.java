@@ -374,40 +374,54 @@ public class UserATM_Impl implements UserATM {
 		
 		String input_pw;
 		String input_pw_check;
-		AccountDTO account_tmp = null;
-		System.out.println("개설할 계좌의 비밀번호를 입력해주세요");
-		input_pw = scan_pw.next();
-		System.out.println("비밀번호 확인");
-		input_pw_check = scan_pw.next();
-		
-		if (!input_pw.equals(input_pw_check)) {
-			System.out.println("비밀번호가 일치하지 않습니다.");
-		} else {			
-			account_tmp = new AccountDTO(user_key, input_pw);
-		}
-		
-		DBDAO db_create_dao = new DBDAO();
 
-		System.out.println(account_tmp.getAccount_password());
-		account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
-		System.out.println(account_tmp.getAccount_password());
-		String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
-		account_tmp.setAccount_num(account_tmp_num);
+		int input_pw_int=0;
+		int input_pw_check_int=0;
+		int n_sql_insert = 0;
 		
-		int n = 0;
-		n = db_create_dao.insert_account_db(session, account_tmp);
 		
-		if (n == 0) {
-			//throw Exception()
-		}
-		else {
-	
-			System.out.println("계좌 개설 요청이 완료되었습니다. \n");
-			session.commit();
-		}
-		session.close();
+		AccountDTO account_tmp = new AccountDTO();
+		DBDAO db_create_dao = new DBDAO();
+		
+		do {
+			System.out.println("개설할 계좌의 비밀번호를 입력해주세요");
+			input_pw = scan_pw.next();			
+			System.out.println("비밀번호 확인");
+			input_pw_check = scan_pw.next();
+			try {
+				input_pw_int = Integer.parseInt(input_pw);
+				input_pw_check_int = Integer.parseInt(input_pw_check);
+			} catch(Exception e) {
+				System.out.println("잘못된 비밀번호 형식입니다.");
+			}
+			if (input_pw_int != input_pw_check_int) {
+				System.out.println("비밀번호가 일치하지 않습니다.");
+			}
+		} while(input_pw_int>9999 || input_pw_int < 0 || input_pw_int != input_pw_check_int); // do-while()문 end
+				
+		try {
+			account_tmp = new AccountDTO(user_key, input_pw);
+			account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
+			String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
+			account_tmp.setAccount_num(account_tmp_num);
+			n_sql_insert = db_create_dao.insert_account_db(session, account_tmp);
+			if (n_sql_insert == 0) {
+				System.out.println("계좌 개설 정보가 잘못되어, 개설요청이 정상적으로 이루어지지 않았습니다. 계좌 개설 요청 정보를 다시 입력해주세요.");
+				session.rollback();
+			}
+			else {
+				System.out.println("계좌 개설 요청이 완료되었습니다. \n");
+				session.commit();
+			}
+		} catch(Exception e) {
+			System.out.println("개설할 계좌의 정보가 잘못되었습니다. 다시 입력해주세요.");
+		} finally {
+			session.close();
+		} // try {} end
+		
 	}
 
+	
 	@Override
 	public boolean userCheckPassWord(String pw) {
 		if(userPw.equals(pw)) {
