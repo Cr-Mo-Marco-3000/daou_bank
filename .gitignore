@@ -112,5 +112,9 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+# credential
+credential/
+
+
 # our password seed
 # End of https://www.toptal.com/developers/gitignore/api/eclipse,java,maven
