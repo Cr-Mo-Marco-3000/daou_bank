@@ -2,10 +2,13 @@ package dao;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -17,8 +20,10 @@ import dto.UserDTO;
 
 public class DBDAO {
 
+		
 		// SQL 세션 생성 ===========================================
 		static SqlSessionFactory sqlSessionFactory;
+		private static String Encryption_seed;
 		static {
 			String resource = "mybatis/Configuration.xml";
 			InputStream inputStream = null;
@@ -30,7 +35,21 @@ public class DBDAO {
 			sqlSessionFactory =
 			  new SqlSessionFactoryBuilder().build(inputStream);
 		
+			Properties properties = new Properties();
+			String resource_credential = "credential/Credential.properties";
+			try {
+				Reader reader = Resources.getResourceAsReader(resource_credential);
+				properties.load(reader);
+				Encryption_seed = properties.getProperty("credential.passwd_Encryption_seed");
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		}// static블럭 end
+		
+		// 암호화를 위한 랜덤 시드 생성 ================================
+		
+
+		
 		
 		// 동일한 아이디가 있는지 확인하는 메서드 (중복 ID 체크)
 		public boolean check_Id(SqlSession session, String id) {
@@ -41,13 +60,16 @@ public class DBDAO {
 			return Is_in_userid;
 		}
 		
+		
 		// 로그인 정보가 DB에 존재하는지 확인하는 메서드
-		public boolean check_login_user_db(SqlSession session, UserDTO dto) {
+		public boolean check_dupli_user_db(SqlSession session, UserDTO dto) {
 			
-			boolean is_user_in_db = true;
-			List<UserDTO>select_check_user = session.selectList("User_check", dto);	
+			boolean is_user_in_db = false;
+			System.out.println(dto);
+			List<UserDTO>select_check_user = session.selectList("User_check_sign_up", dto);	
+			System.out.println(select_check_user.size());
 			if (select_check_user.size() != 0)
-				is_user_in_db = false;
+				is_user_in_db = true;
 			return is_user_in_db;
 		}
 
@@ -63,7 +85,7 @@ public class DBDAO {
 		// 로그인 정보의 UserDTO를 반환하는 메서드
 		public UserDTO login_user_info(SqlSession session, UserDTO dto) {
 			
-			UserDTO login_user_info = session.selectOne("Login_user_info_Map", dto);			
+			UserDTO login_user_info = session.selectOne("Login_user_info", dto);			
 			return login_user_info;
 		}
 		
@@ -88,5 +110,74 @@ public class DBDAO {
 			session.commit();
 			return n;
 		}
+		
+		// 개설 요청을 위한 임시 계좌번호를 생성하는 메서드
+		public String create_tmp_account_num(SqlSession session, AccountDTO dto) {
+			String tmp_account_num = "";
+			tmp_account_num = session.selectOne("create_account_tmp_num", dto.getAccount_num());
+			return tmp_account_num;
+		}
+		
+		
+	   // 암호화를 위한 Random Seed 발생
+		  public int create_random_seed() {
+			  String seed = Encryption_seed.toString();
+			  int str_len = seed.length();
+			  int tmp=0;
+			  String tmp_str = "";
+			  System.out.println(tmp_str);
+			  System.out.println(seed);
+			  tmp_str = str_len+seed;
+			  System.out.println(tmp_str);
+			 
+			  for (int c_idx = 0 ; c_idx < str_len;c_idx++) {
+				  if (c_idx %2 ==0) {
+					  tmp+=Integer.parseInt("" + tmp_str.charAt(c_idx));
+				  }
+			  }
+			  
+			  while(tmp>10) {
+				  System.out.println(tmp);
+				  tmp_str = "" + tmp;
+				  tmp = 0;
+				  for (int idx = 0 ; idx < tmp_str.length();idx++) {
+					  tmp += Integer.parseInt("" + tmp_str.charAt(idx));
+				  }
+			  }
+			  System.out.println(tmp);
+			  return tmp;
+		  }
+		  
+	   // 암호화하는 메서드
+		  public String Encryptonize_pw(String input_pw, int seed) {
+			  System.out.println(input_pw);
+			  
+			  char []ch_pw_token = input_pw.toCharArray();
+			  String Encrypt_pw;
+			  int idx = 0;
+			  for (char token:ch_pw_token) {
+				  ch_pw_token[idx]-=seed;
+				  idx++;
+				  }
+			  Encrypt_pw = String.valueOf(ch_pw_token);
+			  System.out.println(Encrypt_pw);
+			  
+			  
+			  return Encrypt_pw;
+		  }
+		  		  
+	   // 복호화하는 메서드
+		  public String Decryptonize_pw(String db_pw, int seed) {
+			  char []ch_pw_token = db_pw.toCharArray();
+			  String Decrypt_pw;
+			  int idx = 0;
+			  for (char token:ch_pw_token) {
+				  ch_pw_token[idx]+=6;
+				  idx++;
+			  }
+			  Decrypt_pw = String.valueOf(ch_pw_token);
+			  return String.valueOf(Decrypt_pw );
+		  }
+
 					
 }

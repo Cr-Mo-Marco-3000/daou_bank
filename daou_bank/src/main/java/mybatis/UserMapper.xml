@@ -10,18 +10,24 @@
 		WHERE USER_ID = #{id}
   </select> 
    
-  <select id="User_check" parameterType="dto.UserDTO" resultType = "dto.UserDTO">
+  <select id="User_check_sign_up" parameterType="dto.UserDTO" resultType = "dto.UserDTO">
 		SELECT *
 		FROM BANK_USER
 		WHERE NAME = #{name} and BIRTH_DAY = TO_DATE(#{birth_day},'YYYYMMDD')
   </select> 
 
+  <select id="User_check_log_in" parameterType="dto.UserDTO" resultType = "dto.UserDTO">
+		SELECT *
+		FROM BANK_USER
+		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}
+  </select> 
+
   <insert id="User_sign_up" parameterType="dto.UserDTO" >
 		INSERT INTO BANK_USER(USER_KEY, USER_ID, USER_PASSWORD, TYPE, NAME, BIRTH_DAY)
 		VALUES (bank_user_sequence.NEXTVAL, #{user_id}, #{user_password},'Customer',#{name},TO_DATE(#{birth_day},'YYYYMMDD'))
-  </insert> 
+  </insert>
 
-  <select id="Login_user_info_Map" parameterType="dto.UserDTO" resultType = "dto.UserDTO" >
+  <select id="Login_user_info" parameterType="dto.UserDTO" resultType = "dto.UserDTO" >
 		SELECT *
 		FROM BANK_USER
 		WHERE USER_ID = #{user_id} AND USER_PASSWORD = #{user_password}
@@ -30,13 +36,8 @@
    <select id="Login_user_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
 		SELECT *
 		FROM ACCOUNT
-		WHERE USER_KEY = #{user_key} AND IS_TEMPORARY = 0;
+		WHERE USER_KEY = #{user_key}
   </select> 
-   
-   <select id="Login_user_tmp_account_list" parameterType="dto.UserDTO" resultType = "dto.AccountDTO" >
-		SELECT *
-		FROM ACCOUNT
-		WHERE USER_KEY = #{user_key} AND IS_TEMPORARY = 1;
-  </select> 
+ 
    
 </mapper>
