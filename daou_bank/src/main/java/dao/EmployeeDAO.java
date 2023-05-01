@@ -20,8 +20,6 @@ public class EmployeeDAO {
 	    return accountList;
 	}
 	
-
-
 	// 고객 등록
 	public int registerCustomer(SqlSession session, UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException {
 	    try {
