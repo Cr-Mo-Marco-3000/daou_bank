@@ -35,6 +35,14 @@ public class UserDTO {
 		this.name = "";
 		this.birth_day = "";
 	}
+	 public String getUserId() {
+	        return user_id;
+	    }
+
+
+	public UserDTO(String user_id2) {
+		// TODO Auto-generated constructor stub
+	}
 
 	 
 }

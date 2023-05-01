@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import dao.EmployeeDAO;
+import dao.ManagerDAO;
 import dto.UserDTO;
 import exception.AccountRequestNotFoundException;
 import exception.AllCustomerInfocheckFailException;
@@ -16,6 +17,7 @@ import exception.CustomerAccountRejectionException;
 import exception.CustomerEnrolFailException;
 import exception.CustomerInfocheckFailException;
 import exception.DuplicateCustomerException;
+import exception.EmployeeCreationFailException;
 
 
 public class EmployeeServiceImpl implements EmployeeService {
@@ -36,8 +38,6 @@ public class EmployeeServiceImpl implements EmployeeService {
  	}
  	
 
- 	
- 
 
  	 @Override
      public List<UserDTO> getAccountRequests(String isTemporary) throws AccountRequestNotFoundException {
@@ -51,9 +51,10 @@ public class EmployeeServiceImpl implements EmployeeService {
          }
      }
  	 
+ 	 // 고객 등록 
  	@Override
-	public int registerCustomer(SqlSession session, UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException {
-	    try {
+	public int registerCustomer(UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException {
+ 		try (SqlSession session = sqlSessionFactory.openSession()){
 	        // 중복 여부 검사
 	        int count = session.selectOne("mybatis.EmployeeMapper.isDuplicatedCustomer", user.getUserId());
 	        if (count > 0) {
@@ -77,7 +78,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 	    } catch (Exception e) {
 	        throw new CustomerEnrolFailException("고객 등록에 실패했습니다.");
 	    }
+ 		
+ 
 	}
+ 	
+ 	
+ 	
  	
  	 @Override
      public void approveCustomer(String user_id) throws CustomerAccountApprovalException {
@@ -92,9 +98,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      }
 
  	@Override
- 	public int rejectAccountRequest(SqlSession session, String user_id) {
+ 	public int rejectAccountRequest(String user_id) throws CustomerAccountRejectionException{
  	    int result = 0;
- 	    try {
+ 	    try (SqlSession session = sqlSessionFactory.openSession()) {
  	        // Check if account request exists for the given user_id
  	        int count = session.selectOne("mybatis.EmployeeMapper.getAccountRequests", user_id);
  	        if (count != 1) {
