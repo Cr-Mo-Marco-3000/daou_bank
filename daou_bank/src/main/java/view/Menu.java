@@ -1,10 +1,16 @@
 package view;
 
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import controller.ManagerServiceImpl;
 import controller.UserATM_Impl;
@@ -200,17 +206,61 @@ public class Menu {
 				} else if (menu == 3) {
 					System.out.println("직원 등록을 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();
-					// 직원 정보 입력
-					System.out.println("직원 아이디를 입력해주세요");
-					String user_id = scan.next();
-					System.out.println("직원의 비밀번호를 입력해주세요");
-					String user_password = scan.next();
-					System.out.println("직원의 비밀번호 확인을 입력해주세요");
-					String user_password_confirm = scan.next();
+					// 아이디
+					String user_id = "";
+					int checkNum = 2;
+					while (checkNum == 2 || checkNum == 1) {
+						if (checkNum == 2) {
+							System.out.println("직원 아이디를 입력해주세요");
+						} else { 
+							System.out.println("중복되는 아이디가 존재합니다. 다시 입력해주세요");
+						}
+						user_id = scan.next();
+						try {
+							checkNum = service.isDuplicatedEmployee(user_id);
+						} catch (EmployeeCreationFailException e) {
+							System.out.println(e.getMessage());
+						}
+					};
+					// 비밀번호
+					Console console = System.console();
+					String user_password = "";
+					String user_password_confirm = "";
+					int flag = 1;
+					if (console == null) {			// eclipse로 실행했을 때 => console이 null로 들어감
+						do {
+							if (flag == 0) System.out.println("비밀번호가 일치하지 않습니다. 다시 입력해주세요");
+							System.out.println("직원의 비밀번호를 입력해주세요");
+							user_password = scan.next();
+							System.out.println("직원의 비밀번호 확인을 입력해주세요");
+							user_password_confirm = scan.next();
+							flag = 0;
+						} while (!user_password.equals(user_password_confirm));
+					} else {
+						do {
+							if (flag == 0) System.out.println("비밀번호가 일치하지 않습니다. 다시 입력해주세요");
+							user_password = new String(console.readPassword("직원의 비밀번호를 입력해주세요"));
+							user_password_confirm = new String(console.readPassword("비밀번호 확인을 입력해주세요"));
+							flag = 0;
+						} while (!user_password.equals(user_password_confirm));
+					}
+					//이름
 					System.out.println("직원의 이름을 입력해주세요");
 					String user_name = scan.next();
-					System.out.println("직원의 생일을 입력해주세요");
-					String user_birth_day = scan.next();
+					// 생일
+					flag = 1;
+					String user_birth_day ="";
+					do {
+						if (flag == 0) System.out.println("형식이 일치하지 않습니다. 다시 입력해주세요");
+						System.out.println("직원의 생일을 입력해주세요(8자리)");
+						user_birth_day = scan.next();
+						flag = 1;
+						// 조건을 만족하지 않았을 때 들어감 => 정규표현식
+						if (!user_birth_day.matches("^[0-9]{8}$")) {
+							flag = 0;
+						}
+					} while (flag == 0);
+					
 					UserDTO user = new UserDTO(-1, user_id, user_password, "Employee", user_name, user_birth_day);
 					try {
 						service.registerEmployee(user);
@@ -222,13 +272,11 @@ public class Menu {
 					ManagerServiceImpl service = new ManagerServiceImpl();
 					System.out.println("인계하시려는 직원 아이디를 입력해주세요");
 					String targetEmployee = scan.next();
-					
 					try {
 						service.handOverManager(loginedUser, targetEmployee);
 					} catch (HandOverManagerException e) {
 						System.out.println(e.getMessage());
 					}
-					
 				} else if (menu == 5) {
 					System.out.println("직원 삭제를 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();

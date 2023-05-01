@@ -12,7 +12,7 @@ public class ManagerDAO {
 		n = session.selectOne("mybatis.ManagerMapper.selectEmployeeId", userId);
 		return n;
 	}
-	
+
 	// 직원등록
 	public int registerEmployee (SqlSession session, UserDTO user) {
 		int n = 0;
