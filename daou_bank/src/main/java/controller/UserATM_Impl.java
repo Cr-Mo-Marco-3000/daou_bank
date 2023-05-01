@@ -318,9 +318,9 @@ public class UserATM_Impl implements UserATM {
 		System.out.println(input_pw);
 		System.out.println("비밀번호 확인");
 		input_pw_check = scan_pw.next();
-		System.out.println(input_pw);
+		System.out.println(input_pw_check);
 		
-		if (input_pw.equals( input_pw_check )) {
+		if (!input_pw.equals(input_pw_check)) {
 			System.out.println("비밀번호가 일치하지 않습니다.");
 		} else {			
 			account_tmp = new AccountDTO(user_key, input_pw);
