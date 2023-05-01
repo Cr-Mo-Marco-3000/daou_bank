@@ -125,8 +125,13 @@ Menu menu = Menu.getInstance();
 	// ==================================================================================================================
 	// 로그인
 	@Override
-	public void userLogin(UserDTO loginedUser, List<AccountDTO> login_User_account_list ) {
+	public void userLogin(UserDTO loginedUser) {
+		
 		SqlSession session = sqlSessionFactory.openSession();		
+		
+		DBDAO user_login_dao = new DBDAO();
+		List<AccountDTO> login_User_account_list;
+
 		
 		System.out.println("아이디를 입력하세요:");
 		String id = Menu.scan.next();
@@ -134,15 +139,15 @@ Menu menu = Menu.getInstance();
 		String pw = Menu.scan.next();
 		
 		UserDTO userdto = new UserDTO(id,pw);
-		DBDAO db_login_dao = new DBDAO();
-		userdto.setUser_password(db_login_dao.Encryptonize_pw(userdto.getUser_password(), db_login_dao.create_random_seed()));
-		loginedUser = db_login_dao.login_user_info(session, userdto);
+		
+		userdto.setUser_password(user_login_dao.Encryptonize_pw(userdto.getUser_password(), user_login_dao.create_random_seed()));
+		loginedUser = user_login_dao.login_user_info(session, userdto);
 		System.out.println(loginedUser);
 		if(loginedUser != null ){	
-			login_User_account_list = db_login_dao.login_user_account(session, loginedUser);
+			login_User_account_list = user_login_dao.login_user_account(session, loginedUser.getUser_key());
 			System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
 			UserATM_Impl.userId = id;
-			menu.userView(loginedUser,login_User_account_list);
+			menu.userView(loginedUser);
 		}else {
 			System.out.println("아이디 & 비밀번호를 확인해주세요.");
 		}

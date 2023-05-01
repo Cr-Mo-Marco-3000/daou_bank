@@ -115,7 +115,12 @@ public class UserATM_Impl implements UserATM {
 	}
 
 	@Override
-	public void userDeposit() {
+	public void userDeposit(UserDTO loginedUser) {
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		DBDAO user_account_dao = new DBDAO();
+		List<AccountDTO> login_User_account_list = user_account_dao.login_user_account(session, loginedUser.getUser_key());
+		
 		
 		System.out.print("입금하실 금액을 입력해주세요 [취소:0] :");
 		try {
@@ -139,15 +144,21 @@ public class UserATM_Impl implements UserATM {
 	}
 
 	@Override
-	public void userTransfer() {
+	public void userTransfer(UserDTO loginedUser) {
 		
 		System.out.println("입금하실 계좌를 입력하세요.");
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		DBDAO user_account_dao = new DBDAO();
+		List<AccountDTO> login_User_account_list = user_account_dao.login_user_account(session, loginedUser.getUser_key());
+		
+		
 		try {
 			String name = "";
 			String accountNum = Menu.scan.next();
 			boolean check = false;
 			
-			for(AccountDTO key : dbDAO.login_user_account(null, userDTO)) {		
+			for(AccountDTO key : dbDAO.login_user_account(session, userDTO.getUser_key())) {		
 				if(accountNum.equals(key.getAccount_num())) {
 					name = userDTO.getName();
 					check = true; 
@@ -390,6 +401,7 @@ public class UserATM_Impl implements UserATM {
 			//throw Exception()
 		}
 		else {
+	
 			System.out.println("계좌 개설 요청이 완료되었습니다. \n");
 			session.commit();
 		}
@@ -407,10 +419,15 @@ public class UserATM_Impl implements UserATM {
 	}
 
 	@Override
-	public void showInfo(UserDTO loginedUser, List<AccountDTO> login_User_account_list) {
+	public void showInfo(UserDTO loginedUser) {
 		int account_cnt = 0;
 		int account_tmp_cnt = 0;
 		int account_balance_total_sum = 0;		
+		
+		
+		SqlSession session = sqlSessionFactory.openSession();
+		DBDAO user_account_dao = new DBDAO();
+		List<AccountDTO> login_User_account_list = user_account_dao.login_user_account(session, loginedUser.getUser_key());
 		
 		System.out.printf("      [%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
 		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━* ");
@@ -439,7 +456,7 @@ public class UserATM_Impl implements UserATM {
 
 		AtomicInteger tmp_index = new AtomicInteger();
 		Predicate<AccountDTO> is_tmp_account = dto -> dto.getIs_temporary().equals("1");
-		Consumer<AccountDTO> print_account_tmp = dto -> System.out.println("  ┃  " + (tmp_index.getAndIncrement()+1) + "번쨰 생성 요청 ---\n  ┃    생성 요청 일자 : " + dto.getCreate_date().toString() + "\n");
+		Consumer<AccountDTO> print_account_tmp = dto -> System.out.println("  ┃  " + (tmp_index.getAndIncrement()+1) + "번쨰 생성 요청 ---\n  ┃    생성 요청 일자 : " + dto.getCreate_date().toString() + "\n  ┃  ");
 		Stream <AccountDTO> account_stream = login_User_account_list.stream();
 				
 		account_stream.filter(is_tmp_account).forEach(print_account_tmp);

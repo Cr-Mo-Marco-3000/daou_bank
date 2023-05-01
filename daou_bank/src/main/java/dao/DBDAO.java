@@ -90,8 +90,8 @@ public class DBDAO {
 		}
 		
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
-		public List<AccountDTO> login_user_account(SqlSession session, UserDTO dto) {
-			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",dto);
+		public List<AccountDTO> login_user_account(SqlSession session, int user_key) {
+			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",user_key);
 			System.out.println(login_user_account_lst.toString());
 			return login_user_account_lst;
 		}
