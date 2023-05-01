@@ -75,7 +75,6 @@ public class Menu {
 			
 				case ("1"):
 					userJoin.userLogin(loginedUser,login_User_account_list);
-
 					break;
 					
 				case ("2"):
@@ -267,6 +266,7 @@ public class Menu {
 					} catch (EmployeeCreationFailException e) {
 						System.out.println(e.getMessage());
 					}
+					
 				} else if (menu == 4) {
 					System.out.println("관리자 권한 인계를 선택하셨습니다.");
 					ManagerServiceImpl service = new ManagerServiceImpl();
