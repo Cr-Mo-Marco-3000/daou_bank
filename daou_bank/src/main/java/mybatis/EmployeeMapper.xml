@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+	<mapper namespace="mybatis.EmployeeMapper">
+  
+		  <!-- 계좌 생성 요구 조회 -->
+		  <select id="getAccountRequests" resultMap="accountRequestResult">
+		    SELECT *
+		    FROM account
+		    WHERE is_temporary = #{isTemporary}
+		  </select> 
+
+		  <!-- 결과를 매핑하는 resultMap 정의 -->
+		  <!-- resultMap은 SQL 쿼리 결과를 자바 객체로 매핑하기 위한 설정 -->
+		  <!--  DB에서 조회한 데이터를 자동으로 Java 객체로 변환 -->
+		  <!-- property는 임의의 변수명 (테이블 컬럼명과 무관)  -->
+		  <resultMap id="accountRequestResult" type="mybatis.EmployeeMapper.UserDTO">
+		    <id property="id" column="id"/>
+		    <result property="userId" column="user_id"/>
+		    <!-- is_temporary 컬럼의 값을 isTemporary 변수에 매핑 -->
+		    <result property="isTemporary" column="is_temporary"/>
+		    <result property="createDate" column="create_date"/> 
+		  </resultMap>
+
+ 			
+		  <!-- 고객 등록 -->
+		  <!-- <insert> 태그를 이용해 등록할 고객의 정보를 bank_user 테이블에 삽입 -->
+		  <!-- type 값은 'Customer'로 고정 -->
+		  <!-- user_key는 sequence를 이용해 새로운 고유한 값을 자동으로 생성  -->
+		  <insert id="registerCustomer" parameterType="mybatis.EmployeeMapper.UserDTO">
+			INSERT INTO bank_user(
+		  	user_key, 
+		  	user_id, 
+		  	user_password, 
+		  	type, 
+		  	name, 
+		  	birth_day)
+		  VALUES (
+		  	bank_user_sequence.NEXTVAL,
+		  	#{user_id},
+		  	#{user_password},
+		  	'Customer',
+		  	#{name},
+		  	#{birth_day})
+		  </insert>
+		 
+	 	<!-- 고객 id 중복 확인  -->
+		<select id="isDuplicatedCustomer" parameterType="String" resultType="int">
+		    SELECT COUNT(*) FROM bank_user WHERE user_id = #{userId}
+		</select>
+		 
+		 
+		  <!-- 고객 승인 -->
+			<update id="approveCustomer" parameterType="int">
+			  UPDATE bank_user
+			  SET is_temporary = 0
+			  WHERE user_key = #{userKey}
+			</update>
+		  
+		  <!-- 고객 승인 거절 -->
+		   <delete id="deleteAccountRequest" parameterType="String">
+    		DELETE FROM account_request WHERE user_id = #{user_id}
+		   </delete>
+		  
+		  <!-- 고객 정보 열람 -->
+		  <select id="getCustomerById" parameterType="String" resultType="mybatis.EmployeeMapper.UserDTO">
+		    SELECT *
+		    FROM bank_user
+		    WHERE user_id = #{user_id}
+		  </select>
+		  
+
+		  <!-- 전체 회원 정보 조회 -->
+		  <select id="getAllCustomers" resultMap="CustomerResult">
+		    SELECT *
+		    FROM bank_user 
+		  </select>
+		  
+		  <resultMap id="CustomerResult" type="mybatis.EmployeeMapper.CustomerResult">
+		    <id property="user_id" column="user_id"/>
+		    <result property="user_key" column="user_key"/>
+		    <result property="name" column="name"/>
+		    <result property="birth_day" column="birth_day"/>
+		  </resultMap>
+		  
+	</mapper>
