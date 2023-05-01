@@ -444,6 +444,8 @@ public class UserATM_Impl implements UserATM {
 		DBDAO user_account_dao = new DBDAO();
 		List<AccountDTO> login_User_account_list = user_account_dao.login_user_account(session, loginedUser.getUser_key());
 		
+		System.out.println(login_User_account_list);
+		
 		System.out.printf("      [%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
 		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━* ");
 		System.out.println("  ┃  개인 정보 ");

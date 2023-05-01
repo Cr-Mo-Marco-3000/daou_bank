@@ -65,9 +65,7 @@ public class DBDAO {
 		public boolean check_dupli_user_db(SqlSession session, UserDTO dto) {
 			
 			boolean is_user_in_db = false;
-			System.out.println(dto);
 			List<UserDTO>select_check_user = session.selectList("User_check_sign_up", dto);	
-			System.out.println(select_check_user.size());
 			if (select_check_user.size() != 0)
 				is_user_in_db = true;
 			return is_user_in_db;
@@ -92,21 +90,18 @@ public class DBDAO {
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
 		public List<AccountDTO> login_user_account(SqlSession session, int user_key) {
 			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",user_key);
-			System.out.println(login_user_account_lst.toString());
 			return login_user_account_lst;
 		}
 				
 		// 로그인 정보의 [ tmp_Account0, tmp_Account1, ... ] 리스트를 반환하는 메서드
 		public List<AccountDTO> login_user_tmp_account(SqlSession session, UserDTO dto) {
 			List <AccountDTO> login_user_tmp_account_lst = session.selectList("Login_user_tmp_account_list",dto);
-			System.out.println(login_user_tmp_account_lst.toString());
 			return login_user_tmp_account_lst;
 		}
 		
 		// 개설 요청 계좌를 DB에 저장하는 메서드
 		public int insert_account_db(SqlSession session, AccountDTO dto) {
 			int n = 0;
-			System.out.println(dto);
 			n = session.insert("Account_create", dto);
 			session.commit();
 			return n;
