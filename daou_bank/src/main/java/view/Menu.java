@@ -181,6 +181,7 @@ public class Menu {
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 				System.out.println("\t  ┃ 1) 고객 정보 열람");
 				System.out.println("\t  ┃ 2) 계좌 생성 요구 조회");
+				System.out.println(loginedUser);
 				// 직원이 매니저일 경우, 해당 메뉴들이 보입니다.
 				if (loginedUser.getType() == "Manager") {
 					System.out.println("\t  ┃ 3) 직원 등록");

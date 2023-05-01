@@ -132,7 +132,7 @@ Menu menu = Menu.getInstance();
 	// ==================================================================================================================
 	// 로그인
 	@Override
-	public void userLogin(UserDTO loginedUser) {
+	public void userLogin(UserDTO logined_User) {
 		
 		SqlSession session = sqlSessionFactory.openSession();		
 		
@@ -146,13 +146,13 @@ Menu menu = Menu.getInstance();
 		try {
 			userdto = new UserDTO(id,pw);
 			userdto.setUser_password(user_login_dao.Encryptonize_pw(userdto.getUser_password(), user_login_dao.create_random_seed()));
-			loginedUser = user_login_dao.login_user_info(session, userdto);
+			logined_User = user_login_dao.login_user_info(session, userdto);
 
-			if(loginedUser != null ){	
-				System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
+			if(logined_User != null ){	
+				System.out.println(" [ " + logined_User.getName()+" ] 님 환영합니다.");
 				UserATM_Impl.userId = id;
-				if (loginedUser.getType().equals("Customer")) {
-					menu.userView(loginedUser);
+				if (logined_User.getType().equals("Customer")) {
+					menu.userView(logined_User);
 				}
 				else {
 					menu.EmployeeView();
