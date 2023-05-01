@@ -19,8 +19,6 @@ import dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import model.BankAccount;
-import model.User;
 import view.Menu;
 
 @Data
@@ -139,7 +137,7 @@ Menu menu = Menu.getInstance();
 		DBDAO db_login_dao = new DBDAO();
 		userdto.setUser_password(db_login_dao.Encryptonize_pw(userdto.getUser_password(), db_login_dao.create_random_seed()));
 		loginedUser = db_login_dao.login_user_info(session, userdto);
-
+		System.out.println(loginedUser);
 		if(loginedUser != null ){	
 			login_User_account_list = db_login_dao.login_user_account(session, loginedUser);
 			System.out.println(" [ " + loginedUser.getName()+" ] 님 환영합니다.");
@@ -151,20 +149,4 @@ Menu menu = Menu.getInstance();
 		session.close();
 		return;
 	}
-	
-	@Override
-	public void userList() {
-		/* 회원목록 */ 
-		int count = 1;
-		for(String key:User.userMap.keySet()) {		
-			User value = User.userMap.get(key);	
-			System.out.printf("[%d] 번 고객님\n",count);
-			System.out.println(value.toList()); count++;
-		}
-	}
-	
-	// ==================================================================================================================
-	// DB_check
-	
-	
 }

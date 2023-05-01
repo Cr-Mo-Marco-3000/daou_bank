@@ -69,7 +69,7 @@ public class Menu {
 			
 				case ("1"):
 					userJoin.userLogin(loginedUser,login_User_account_list);
-
+					System.out.println(loginedUser);
 					break;
 					
 				case ("2"):

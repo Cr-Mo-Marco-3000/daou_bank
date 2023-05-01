@@ -3,6 +3,20 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.BankMapper">
+ 
+	<!-- 거래내역 -->
+	<select id="transactionHistory" parameterType="String" resultType="dto.TransactionDTO">
+		select *
+		from TRANSACTION
+		where TRANSACTION_SEND_NAME = #{name}
+	</select>
+
+	<update id="updateBalance" parameterType="dto.AccountDTO">
+	  update account
+	  set balance = #{balance}
+	  where account_num = #{account_num}
+	</update>
+	
  	<!-- 특정 기능에 사용되는 SQL이 아니라, 시스템 전반에 사용되는 SQL문을 작성합니다.-->
    	
    	<!-- 일주일 지난 임시 계좌 날리는 쿼리문-->

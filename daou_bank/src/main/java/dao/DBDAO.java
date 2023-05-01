@@ -2,10 +2,12 @@ package dao;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 
 import org.apache.ibatis.io.Resources;
@@ -18,12 +20,10 @@ import dto.UserDTO;
 
 public class DBDAO {
 
-		// 아모와를 위한 랜덤 시드 생성
-		private String seed_by_dba = "19860109";
 		
 		// SQL 세션 생성 ===========================================
 		static SqlSessionFactory sqlSessionFactory;
-		
+		private static String Encryption_seed;
 		static {
 			String resource = "mybatis/Configuration.xml";
 			InputStream inputStream = null;
@@ -35,7 +35,21 @@ public class DBDAO {
 			sqlSessionFactory =
 			  new SqlSessionFactoryBuilder().build(inputStream);
 		
+			Properties properties = new Properties();
+			String resource_credential = "credential/Credential.properties";
+			try {
+				Reader reader = Resources.getResourceAsReader(resource_credential);
+				properties.load(reader);
+				Encryption_seed = properties.getProperty("credential.passwd_Encryption_seed");
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		}// static블럭 end
+		
+		// 암호화를 위한 랜덤 시드 생성 ================================
+		
+
+		
 		
 		// 동일한 아이디가 있는지 확인하는 메서드 (중복 ID 체크)
 		public boolean check_Id(SqlSession session, String id) {
@@ -107,16 +121,23 @@ public class DBDAO {
 		
 	   // 암호화를 위한 Random Seed 발생
 		  public int create_random_seed() {
-			  int str_len = seed_by_dba.length();
+			  String seed = Encryption_seed.toString();
+			  int str_len = seed.length();
 			  int tmp=0;
 			  String tmp_str = "";
-			  tmp_str = str_len+""+seed_by_dba;
+			  System.out.println(tmp_str);
+			  System.out.println(seed);
+			  tmp_str = str_len+seed;
+			  System.out.println(tmp_str);
+			 
 			  for (int c_idx = 0 ; c_idx < str_len;c_idx++) {
 				  if (c_idx %2 ==0) {
 					  tmp+=Integer.parseInt("" + tmp_str.charAt(c_idx));
 				  }
 			  }
+			  
 			  while(tmp>10) {
+				  System.out.println(tmp);
 				  tmp_str = "" + tmp;
 				  tmp = 0;
 				  for (int idx = 0 ; idx < tmp_str.length();idx++) {
@@ -158,7 +179,5 @@ public class DBDAO {
 			  return String.valueOf(Decrypt_pw );
 		  }
 
-	  
-		
 					
 }
