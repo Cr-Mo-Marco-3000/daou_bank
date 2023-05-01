@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -17,8 +18,12 @@ import dto.UserDTO;
 
 public class DBDAO {
 
+		// 아모와를 위한 랜덤 시드 생성
+		private String seed = "19860109";
+		
 		// SQL 세션 생성 ===========================================
 		static SqlSessionFactory sqlSessionFactory;
+		
 		static {
 			String resource = "mybatis/Configuration.xml";
 			InputStream inputStream = null;
@@ -100,6 +105,45 @@ public class DBDAO {
 		}
 		
 		
+	   // 암호화를 위한 Random Seed 발생
+		  private int create_random_seed(String seed) {
+			  int str_len = seed.length();
+			  int tmp=0;
+			  String tmp_str = "";
+			  for (int c_idx = 0 ; c_idx < str_len;c_idx++) {
+				  if (c_idx %2 ==0) {
+					  tmp+=Integer.parseInt(""+seed.charAt(c_idx));
+				  }
+			  }
+			  while(tmp>10) {
+				  tmp_str = "" + tmp;
+				  tmp = 0;
+				  for (int idx = 0 ; idx < tmp_str.length();idx++) {
+					  tmp += Integer.parseInt("" + tmp_str.charAt(idx));
+				  }
+			  }
+			  return tmp;
+		  }
+		  
+	   // 암호화하는 메서드
+		  private String Encryptonize_pw(String input_pw, int seed) {
+			  char []ch_pw_token = input_pw.toCharArray();
+			  for (char token:ch_pw_token) {
+				  token-=seed;
+			  }
+			  return String.valueOf(ch_pw_token);
+		  }
+		  		  
+	   // 복호화하는 메서드
+		  private String Decryptonize_pw(String db_pw, int seed) {
+			  char []ch_pw_token = db_pw.toCharArray();
+			  for (char token:ch_pw_token) {
+				  token+=seed;
+			  }
+			  return String.valueOf(ch_pw_token);
+		  }
+
+	  
 		
 					
 }
