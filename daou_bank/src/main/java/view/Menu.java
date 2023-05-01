@@ -54,6 +54,7 @@ public class Menu {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
 			System.out.println("\t┃			┃");
+			System.out.println("\t┃			");
 			System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
@@ -130,7 +131,7 @@ public class Menu {
 			
 				switch(menu) {
 					case ("1"):
-						userImpl.userBalance();
+						userImpl.userBalance(loginedUser);
 						break;
 							
 					case ("2"):
@@ -138,7 +139,7 @@ public class Menu {
 						break;
 					
 					case ("3"):
-						userImpl.userWithdraw();
+						userImpl.userWithdraw(loginedUser);
 						break;
 						
 					case ("4"):
@@ -146,7 +147,7 @@ public class Menu {
 						break;
 						
 					case ("5"):
-						userImpl.userHistory();
+						userImpl.userHistory(loginedUser);
 						break;
 						
 					case ("6"):

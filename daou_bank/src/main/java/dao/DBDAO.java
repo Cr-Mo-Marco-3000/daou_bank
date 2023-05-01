@@ -49,8 +49,6 @@ public class DBDAO {
 		// 암호화를 위한 랜덤 시드 생성 ================================
 		
 
-		
-		
 		// 동일한 아이디가 있는지 확인하는 메서드 (중복 ID 체크)
 		public boolean check_Id(SqlSession session, String id) {
 			boolean Is_in_userid = false;
@@ -121,10 +119,7 @@ public class DBDAO {
 			  int str_len = seed.length();
 			  int tmp=0;
 			  String tmp_str = "";
-			  System.out.println(tmp_str);
-			  System.out.println(seed);
 			  tmp_str = str_len+seed;
-			  System.out.println(tmp_str);
 			 
 			  for (int c_idx = 0 ; c_idx < str_len;c_idx++) {
 				  if (c_idx %2 ==0) {
@@ -133,21 +128,17 @@ public class DBDAO {
 			  }
 			  
 			  while(tmp>10) {
-				  System.out.println(tmp);
 				  tmp_str = "" + tmp;
 				  tmp = 0;
 				  for (int idx = 0 ; idx < tmp_str.length();idx++) {
 					  tmp += Integer.parseInt("" + tmp_str.charAt(idx));
 				  }
 			  }
-			  System.out.println(tmp);
 			  return tmp;
 		  }
 		  
 	   // 암호화하는 메서드
 		  public String Encryptonize_pw(String input_pw, int seed) {
-			  System.out.println(input_pw);
-			  
 			  char []ch_pw_token = input_pw.toCharArray();
 			  String Encrypt_pw;
 			  int idx = 0;
@@ -156,8 +147,6 @@ public class DBDAO {
 				  idx++;
 				  }
 			  Encrypt_pw = String.valueOf(ch_pw_token);
-			  System.out.println(Encrypt_pw);
-			  
 			  
 			  return Encrypt_pw;
 		  }
