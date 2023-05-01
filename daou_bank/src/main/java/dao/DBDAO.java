@@ -106,6 +106,7 @@ public class DBDAO {
 		// 개설 요청 계좌를 DB에 저장하는 메서드
 		public int insert_account_db(SqlSession session, AccountDTO dto) {
 			int n = 0;
+			System.out.println(dto);
 			n = session.insert("Account_create", dto);
 			session.commit();
 			return n;

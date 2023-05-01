@@ -414,6 +414,7 @@ public class UserATM_Impl implements UserATM {
 				session.commit();
 			}
 		} catch(Exception e) {
+			e.printStackTrace();
 			System.out.println("개설할 계좌의 정보가 잘못되었습니다. 다시 입력해주세요.");
 		} finally {
 			session.close();

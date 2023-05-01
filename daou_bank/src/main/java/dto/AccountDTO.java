@@ -28,7 +28,7 @@ public class AccountDTO {
 		this.account_password = password;
 		this.balance = 0;
 		this.is_temporary = "1";
-		this.create_date = "" + cal.get(Calendar.YEAR) + ( cal.get(Calendar.MONTH) + 1 <10? "0"+ (cal.get(Calendar.MONTH) + 1) : cal.get(Calendar.MONTH) + 1) + cal.get(Calendar.DAY_OF_MONTH);
+		this.create_date = "" + cal.get(Calendar.YEAR) + ( cal.get(Calendar.MONTH) + 1 <10? "0"+ (cal.get(Calendar.MONTH) + 1) : cal.get(Calendar.MONTH) + 1) + ( cal.get(Calendar.DAY_OF_MONTH)<10? "0"+ cal.get(Calendar.DAY_OF_MONTH) : cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 }
