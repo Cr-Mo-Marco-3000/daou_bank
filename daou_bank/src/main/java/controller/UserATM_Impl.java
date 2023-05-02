@@ -3,6 +3,8 @@ package controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +19,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import dao.DBDAO;
+import dao.TransactionDAO;
 import dao.BankDAO;
 import dto.AccountDTO;
 import dto.TransactionDTO;
@@ -25,33 +28,18 @@ import view.Menu;
 
 public class UserATM_Impl implements UserATM {
 
-	public String accountNumber; 	// 계좌번호
-	public String userName; 		// 회원 이름
-	public int userKey; 			// 회원키
-	public static String userId; 	// 회원 아이디
-	public String userPw; 			// 회원 비번
+	public static String userId; 			// 유저 아이디
 	public String bank; 			// 계좌조회 , 영수증 변수
 	public int balance; 			// 잔고
-	public String recipientName;	// 수신인
-	public int transactionType;		// 거래 유형
 	
-	public static UserATM_Impl userImpl = new UserATM_Impl();
-	public static UserJoin_Impl userJoin = new UserJoin_Impl();
-	
-	public static AccountDTO accountDTO = new AccountDTO();
 	public static TransactionDTO transactionDTO = new TransactionDTO();
+	
 	
 	public static DBDAO dbDAO = new DBDAO();
 	public static BankDAO bankDAO = new BankDAO();
+	public static TransactionDAO transactionDAO = new TransactionDAO();
 	
 	Menu menu = Menu.getInstance();
-
-	public static UserATM_Impl getInstance() {
-		if(userImpl == null) {
-			userImpl = new UserATM_Impl();
-		}
-		return userImpl;
-	}
 	
 	
 	// SQL 세션을 위한 기본설정 =============================================================================
@@ -100,6 +88,23 @@ public class UserATM_Impl implements UserATM {
 		System.out.println("\t  ------------------------");
 	}
 	
+	
+	// TransactionDTO 설정
+	public TransactionDTO setTransactionDTO(int type, int amount, int balance, String accountNum, String sendName, String takeName, String accountCounterpartNum) {
+		
+		TransactionDTO dto = new TransactionDTO();
+
+		dto.setTransaction_type(type);
+		dto.setTransaction_amount(amount);
+		dto.setTransaction_balance(balance);
+		dto.setAccount_num(accountNum);
+		dto.setTransaction_send_name(sendName);
+		dto.setTransaction_take_name(takeName);
+		dto.setAccount_counterpart_num(accountCounterpartNum);
+				
+		return dto;
+	}
+	
 	@Override
 	public void userBalance(UserDTO userDTO) {
 		
@@ -111,6 +116,8 @@ public class UserATM_Impl implements UserATM {
 	public void userWithdraw(UserDTO userDTO) {
 		
 		List<AccountDTO> list = getAccountList(userDTO);
+		
+		int balance = 0;
 		
 		showAccount(userDTO);
 		
@@ -139,9 +146,15 @@ public class UserATM_Impl implements UserATM {
 					
 					/* 계좌 저장 */
 					userAccount(dto.getAccount_num(), dto.getBalance() - money);	
+					
+					balance = dto.getBalance() - money;
 				}
 			}
 		
+			/* 거래 추가 */
+			transactionDTO = setTransactionDTO(2, money, balance, account_num, "", "", "");
+			transactionDAO.insert_transaction(transactionDTO);
+			
 			/* 영수증 */
 			userReceipt(userDTO);
 			
@@ -155,6 +168,8 @@ public class UserATM_Impl implements UserATM {
 	public void userDeposit(UserDTO loginedUser) {
 		
 		List<AccountDTO> list = getAccountList(loginedUser);
+		
+		int balance = 0;
 		
 		showAccount(loginedUser);
 		
@@ -183,8 +198,14 @@ public class UserATM_Impl implements UserATM {
 					
 					/* 계좌 저장 */
 					userAccount(dto.getAccount_num(), dto.getBalance() + money);	
+					
+					balance = dto.getBalance() + money;
 				}
 			}
+			
+			/* 거래 추가 */
+			transactionDTO = setTransactionDTO(1, money, balance, account_num, "", "", "");
+			transactionDAO.insert_transaction(transactionDTO);
 
 			/* 영수증 */
 			userReceipt(loginedUser);
@@ -201,6 +222,9 @@ public class UserATM_Impl implements UserATM {
 		List<AccountDTO> list = getAccountList(loginedUser);
 		int transfer_user_key = 0;
 		
+		int balance1 = 0;
+		int balance2 = 0;
+		
 		showAccount(loginedUser);
 		
 		System.out.print("\n\t 출금하실 계좌번호를 입력해주세요 [취소:0] :");
@@ -210,7 +234,8 @@ public class UserATM_Impl implements UserATM {
 		System.out.print("\t 송금하실 계좌 번호를 입력하세요.");
 		
 		try {
-			String name = "";
+			String opponentName = "";
+			String name = loginedUser.getName();
 			String transferAccountNum = Menu.scan.next();
 			boolean check = false;
 
@@ -230,9 +255,9 @@ public class UserATM_Impl implements UserATM {
 					/* 정상 계좌가 아닌지 (name == null) 체크 후 넘기기 */
 					for (UserDTO dto2 : transfer_user_list) {
 						transfer_user_key = dto2.getUser_key();
-						name = dto2.getName();
+						opponentName = dto2.getName();
 						
-						if (name != null) check = true; 
+						if (opponentName != null) check = true; 
 						break;		
 					}
 				}
@@ -251,7 +276,7 @@ public class UserATM_Impl implements UserATM {
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ 받으실분의 계좌 : " + transferAccountNum);
-			System.out.println("\t  ┃ 받으실분의 성함 : " + name);
+			System.out.println("\t  ┃ 받으실분의 성함 : " + opponentName);
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
 			System.out.println("\t  ┃                   *");
@@ -290,7 +315,7 @@ public class UserATM_Impl implements UserATM {
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 				System.out.println("\t  ┃                 *");
 				System.out.println("\t  ┃ 받으실분의 계좌 : " + transferAccountNum);
-				System.out.println("\t  ┃ 받으실분의 성함 : " + name);
+				System.out.println("\t  ┃ 받으실분의 성함 : " + opponentName);
 				System.out.println("\t  ┃ 송금 금액 : " + formatMoney + "원");
 				System.out.println("\t  ┃                 *");
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
@@ -309,23 +334,35 @@ public class UserATM_Impl implements UserATM {
 					if(!userCheckPassWord(pw, dto)) return;
 				}
 				
-				int cash = accountDTO.getBalance();
-				
 				/* 받는사람의 계좌, 금액 + */
 				List<AccountDTO> transfer_user_account = dao.login_user_account(session, transfer_user_key);
 				
 				for(AccountDTO dto : transfer_user_account) {
 					if (dto.getIs_temporary().equals("0") && transferAccountNum.equals(dto.getAccount_num())) {
 						userAccount(dto.getAccount_num(), dto.getBalance() + money);	
+						
+						balance1 = dto.getBalance() + money;
 					}
 				}
+				
 				
 				/* 보낸사람의 계좌, 금액 - */
 				for(AccountDTO dto : list) {
 					if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) {
 						userAccount(dto.getAccount_num(), dto.getBalance() - money);	
+						
+						balance2 = dto.getBalance() - money;
 					}
 				}
+				
+				
+				/* 거래 추가 */
+				transactionDTO = setTransactionDTO(4, money, balance1, transferAccountNum, name, opponentName, account_num); // 4 : 이체-입금
+				transactionDAO.insert_transaction(transactionDTO);
+
+				transactionDTO = setTransactionDTO(3, money, balance2, account_num, name, opponentName, transferAccountNum); // 3 : 이체-송금
+				transactionDAO.insert_transaction(transactionDTO);
+				
 				
 				try {
 					Thread.sleep(1000);
@@ -333,9 +370,11 @@ public class UserATM_Impl implements UserATM {
 					e.printStackTrace();
 				}
 				
+				/* 영수증 */
 				userReceipt(loginedUser);
 				
 			} catch(Exception e) {
+				e.printStackTrace();
 				System.out.println("\t 잘못 입력하셨습니다.");
 				return;
 			}	
@@ -350,58 +389,60 @@ public class UserATM_Impl implements UserATM {
 	@Override
 	public void userHistory(UserDTO userDTO) {
 		
-		List<AccountDTO> list = getAccountList(userDTO);
+		String name = "";
+		String check = "";
+		String account = "";
+		
+		/* 통장거래 내역 횟수를 확인할 변수 */
+		int count = 1; 
+		
+		showAccount(userDTO);
+		
+		System.out.print("\n\t 통장정리할 계좌번호를 입력해주세요 [취소:0] :");
+		String account_num = Menu.scan.next();
+		if(account_num.equals("0")) return;
+		
+		List<TransactionDTO> transactionList = transactionDAO.transaction_history(account_num);
 		
 		try {
 			
-			/* 남아있던 잔액 을 비교하여 입금/출금 을 확인합니다. */
-			int checkBalance = 0; 
-			
-			/* 통장거래 내역 횟수를 확인할 변수 */
-			int count = 1; 
-			
-			/* 입금/출금 변수 */
-			String check = "";
-			String name = "";
-			String account = transactionDTO.getAccount_num();
-			
-			for(TransactionDTO key : bankDAO.transactionHistory(userName)) {	
+			for(TransactionDTO dto : transactionList) {	
 				
-				int money = key.getTransaction_amount();
-				int cash = 0;
-				int date = key.getTransaction_datetime();
 
-				if(checkBalance > money) {
+				if (dto.getTransaction_type() == 1 || dto.getTransaction_type() == 2) {
+
+					check = (dto.getTransaction_type() == 1) ? "입금" : "출금";
+					name = "name : " + userDTO.getName();
+					account = dto.getAccount_num();
+				
+				} else if (dto.getTransaction_type() == 3 || dto.getTransaction_type() == 4) {
 					
-					check = (key.getTransaction_type() == 1) ? "입금 : " : "출금 : ";
-					name = "name : " + key.getTransaction_send_name();
-					cash = -(checkBalance - money);
-					
-					break;		
-					
-				} else {
-					check = (key.getTransaction_type() == 3) ? "이체-송금 : " : "이체-입금 : ";
-					name = (key.getTransaction_type() == 3) ? "to : " + key.getTransaction_take_name() : "from" + key.getTransaction_send_name();
-					cash = money - checkBalance;
+					check = (dto.getTransaction_type() == 3) ? "이체-송금" : "이체-입금";
+					name = "to : " + dto.getTransaction_take_name() + "\n\t  ┃  from : " + dto.getTransaction_send_name();
+					account = (dto.getTransaction_type() == 3) ? dto.getAccount_num() + " -> " + dto.getAccount_counterpart_num() 
+							 :  dto.getAccount_counterpart_num() + " -> " + dto.getAccount_num() ;
 				}
-
+				
+				int cash = dto.getTransaction_amount();
+				int balance = dto.getTransaction_balance();
+				
 				DecimalFormat df = new DecimalFormat("###,###");
 				String formatCash = df.format(cash);
-				String formatBalance = df.format(money);
+				String formatBalance = df.format(balance);
 			
 				
-				System.out.printf("[%d] 번 거래내역\n",count);
+				System.out.printf("\n\t[%d] 번 거래내역\n",count);
 				
 				System.out.println("");
 				System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
-				System.out.println("\t┃	     " + check + "	┃");
+				System.out.println("\t┃	 " + check +  "    	┃");
 				System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
 				System.out.println("\t  ┃		      ┃");
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 				System.out.println("\t  ┃                 *");
-				System.out.println("\t  ┃    Date : "+date);
+				System.out.println("\t  ┃    Date : "+ dto.getTransaction_datetime().substring(0, 10));
 				System.out.println("\t  ┃    "+name);
-				System.out.println("\t  ┃ Account : "+account);
+				System.out.println("\t  ┃ Account : "+ account);
 				System.out.println("\t  ┃  Amount : "+formatCash+"원");
 				System.out.println("\t  ┃ ");
 				System.out.println("\t  ┃ Balance : "+formatBalance+"원");
@@ -411,15 +452,11 @@ public class UserATM_Impl implements UserATM {
 				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
 				System.out.println("");
 				
-				/* 남아있던 잔액을 비교하여 입금/출금 확인 */
-				checkBalance = money;
-				
 				/* 통장거래 내역 횟수를 확인할 변수 */
 				count ++;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("거래 내역이 없습니다.");
+			System.out.println("\t 거래 내역이 없습니다.");
 			return;
 		}		
 	}
@@ -491,10 +528,10 @@ public class UserATM_Impl implements UserATM {
 		String accountPW = dbDAO.Decryptonize_pw(accountDTO.getAccount_password(), dbDAO.create_random_seed());
 		
 		if(accountPW.equals(pw)) {
-			System.out.println("송금 진행중입니다..");
+			System.out.println("\t 송금 진행중입니다..");
 			return true;
 		}
-		System.out.println("비밀번호가 일치하지 않습니다.");
+		System.out.println("\t 비밀번호가 일치하지 않습니다.");
 		return false;
 	}
 
@@ -556,12 +593,6 @@ public class UserATM_Impl implements UserATM {
 	public void userReceipt(UserDTO userDTO) {
 		
 		List<AccountDTO> list = getAccountList(userDTO);
-		
-		for(AccountDTO dto : list) {
-			this.accountNumber = dto.getAccount_num();	
-		}
-
-		this.userName = userDTO.getName();
 
 		this.bank = "Receipt";
 		DecimalFormat df = new DecimalFormat("###,###");
@@ -581,7 +612,7 @@ public class UserATM_Impl implements UserATM {
 			if (dto.getIs_temporary().equals("0")) {
 				System.out.println("\t  ┃ ------------------------");
 				System.out.println("\t  ┃ 계좌번호 : "+ dto.getAccount_num());
-				System.out.println("\t  ┃    성함 : "+ userName);
+				System.out.println("\t  ┃    성함 : "+ userDTO.getName());
 				System.out.println("\t  ┃    잔액 : "+ formatMoney+"원");
 			}
 		}
