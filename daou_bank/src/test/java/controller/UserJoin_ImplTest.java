@@ -90,7 +90,7 @@ class UserJoin_ImplTest {
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
 
 			/* 계좌정보 저장 */ 
-			userdto.setUser_password(db_dao.Encryptonize_pw(userdto.getUser_password(),db_dao.create_random_seed()));		
+			userdto.setUser_password(db_dao.Encryptonize_pw(userdto.getUser_password(),db_dao.create_random_seed()));
 			db_dao.insert_user_db(session,userdto);
 			session.commit();
 			
