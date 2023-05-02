@@ -102,6 +102,5 @@ class UserJoin_ImplTest {
 		}
 
 	}
-	
 
 }
