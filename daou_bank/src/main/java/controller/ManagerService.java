@@ -12,6 +12,5 @@ public interface ManagerService {
 	
 	public abstract int handOverManager (UserDTO user, String targetEmployee) throws HandOverManagerException;
 	
-	
 	public abstract int deleteEmployee (String targetEmployee) throws DeleteEmployeeFailException;
 }

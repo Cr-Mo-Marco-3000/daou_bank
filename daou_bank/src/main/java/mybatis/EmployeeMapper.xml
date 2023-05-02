@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="mybatis.EmployeeMapper">
+   
+	  <!-- 계좌 생성 요구 조회 -->
+	  <select id="getAccountRequests" resultType="dto.AccountDTO">
+	    SELECT *
+	    FROM account
+	    WHERE is_temporary = '1'
+	  </select>
+	  
+  	  <insert id="registerCustomer" parameterType="dto.UserDTO">
+		INSERT INTO bank_user(
+		  	user_key, 
+		  	user_id, 
+		  	user_password, 
+		  	type, 
+		  	name, 
+		  	birth_day)
+	  	VALUES (
+		  	bank_user_sequence.NEXTVAL,
+		  	#{user_id},
+		  	#{user_password},
+		  	'Customer',
+		  	#{name},
+		  	#{birth_day})
+	  </insert>
+		
+	<!-- 고객 id 중복 확인  -->
+	<select id="isDuplicatedCustomer" parameterType="String" resultType="int">
+	    SELECT COUNT(*) FROM bank_user WHERE user_id = #{userId}
+	</select>
+	 
+	 
+	  <!-- 고객 승인 -->
+		<update id="approveCustomer" parameterType="int">
+		  UPDATE bank_user
+		  SET is_temporary = 0
+		  WHERE user_key = #{userKey}
+		</update>
+	  
+	  <!-- 고객 승인 거절 -->
+	   <delete id="deleteAccountRequest" parameterType="String">
+		DELETE FROM account_request WHERE user_id = #{user_id}
+	   </delete>
+	  
+	  <!-- 고객 정보 열람 -->
+	  <select id="getCustomerById" parameterType="String" resultType="dto.UserDTO">
+	    SELECT *
+	    FROM bank_user
+	    WHERE user_id = #{user_id}
+	  </select>
+	  
+	
+	  <!-- 전체 회원 정보 조회 -->
+	  <select id="getAllCustomers" resultType="dto.UserDTO">
+	    SELECT *
+	    FROM bank_user 
+	  </select>
+</mapper>

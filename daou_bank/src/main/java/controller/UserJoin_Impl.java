@@ -121,7 +121,7 @@ Menu menu = Menu.getInstance();
 			session.commit();
 			
 		} catch(Exception e) {
-			System.out.println("회원가입 정보가 잘 못 되었습니다.");
+			System.out.println("회원가입 정보가 잘못되었습니다.");
 			session.rollback();
 		} finally {
 			session.close();
@@ -155,7 +155,7 @@ Menu menu = Menu.getInstance();
 					menu.userView(logined_User);
 				}
 				else {
-					menu.EmployeeView();
+					menu.EmployeeView(logined_User);
 				}
 			}else {
 				System.out.println("아이디 & 비밀번호를 확인해주세요.");
