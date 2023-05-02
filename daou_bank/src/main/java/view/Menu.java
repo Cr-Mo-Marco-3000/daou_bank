@@ -165,7 +165,6 @@ public class Menu {
 	// 직원이 로그인하면 보이는 뷰
 	public void EmployeeView(UserDTO userdto) {
 		loginedUser = userdto;
-		System.out.println(loginedUser);
 		while(true) {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
