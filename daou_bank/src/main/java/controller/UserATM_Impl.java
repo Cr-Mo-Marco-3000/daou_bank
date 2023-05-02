@@ -70,6 +70,7 @@ public class UserATM_Impl implements UserATM {
 	}
 	// ----------------------------------------------------------------------------
 	
+	// 보유 계좌 가져오는 함수
 	public List<AccountDTO> getAccountList(UserDTO loginedUser) {
 		SqlSession session = sqlSessionFactory.openSession();
 		DBDAO user_account_dao = new DBDAO();
@@ -78,6 +79,7 @@ public class UserATM_Impl implements UserATM {
 		return login_User_account_list;
 	}
 	
+	// 계좌 목록 출력 함수
 	public void showAccount(UserDTO loginedUser) {
 		List<AccountDTO> list = getAccountList(loginedUser);
 		
@@ -114,26 +116,30 @@ public class UserATM_Impl implements UserATM {
 		
 		System.out.print("\n\t 출금하실 계좌번호를 입력해주세요 [취소:0] :");
 		String account_num = Menu.scan.next();
+		if(account_num.equals("0")) return;
 		
 		System.out.print("\t 출금하실 금액을 입력해주세요. [취소:0] :");
 		try {
 			int money = Menu.scan.nextInt();
+			if(Integer.toString(money).equals("0")) return;
 			
 			/* 금액이 0원이하이거나 1000원 단위가 아닐때 */
 			if(money <= 0 || money % 1000 != 0) {
 				System.out.println("\t 1000원 단위로 입력해주세요.");
 				return;
 			}		
-			/* 계좌 저장 */
-			for(AccountDTO dto : list) {
-				/* 금액이 모자랄때 */
-				if(money > dto.getBalance()) {
-					System.out.println("\t 잔액이 모자랍니다.");
-					return;
-				}
 
-				if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) 
-					userAccount(dto.getAccount_num(), dto.getBalance()-money);		
+			for(AccountDTO dto : list) {
+				if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) {
+					/* 금액이 모자랄때 */
+					if(money > dto.getBalance()) {
+						System.out.println("\t 잔액이 모자랍니다.");
+						return;
+					}
+					
+					/* 계좌 저장 */
+					userAccount(dto.getAccount_num(), dto.getBalance() - money);	
+				}
 			}
 		
 			/* 영수증 */
@@ -154,10 +160,12 @@ public class UserATM_Impl implements UserATM {
 		
 		System.out.print("\n\t 입금하실 계좌번호를 입력해주세요 [취소:0] :");
 		String account_num = Menu.scan.next();
-
+		if(account_num.equals("0")) return;
+		
 		System.out.print("\t 입금하실 금액을 입력해주세요 [취소:0] :");
 		try {
 			int money = Menu.scan.nextInt();
+			if(Integer.toString(money).equals("0")) return;
 			
 			/* 금액이 0원이하이거나 1000원 단위가 아닐때 */
 			if(money <= 0 || money % 1000 != 0) {
@@ -165,10 +173,17 @@ public class UserATM_Impl implements UserATM {
 				return;
 			}		
 			
-			/* 계좌 저장 */
 			for(AccountDTO dto : list) {
-				if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) 
-					userAccount(dto.getAccount_num(), dto.getBalance()+money);	
+				if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) {
+					/* 금액이 모자랄때 */
+					if(money > dto.getBalance()) {
+						System.out.println("\t 잔액이 모자랍니다.");
+						return;
+					}
+					
+					/* 계좌 저장 */
+					userAccount(dto.getAccount_num(), dto.getBalance() + money);	
+				}
 			}
 
 			/* 영수증 */
@@ -184,28 +199,47 @@ public class UserATM_Impl implements UserATM {
 	public void userTransfer(UserDTO loginedUser) {
 		
 		List<AccountDTO> list = getAccountList(loginedUser);
+		int transfer_user_key = 0;
 		
-		System.out.println("입금하실 계좌를 입력하세요.");
+		showAccount(loginedUser);
 		
-		SqlSession session = sqlSessionFactory.openSession();
-		DBDAO user_account_dao = new DBDAO();
-		List<AccountDTO> login_User_account_list = user_account_dao.login_user_account(session, loginedUser.getUser_key());
+		System.out.print("\n\t 출금하실 계좌번호를 입력해주세요 [취소:0] :");
+		String account_num = Menu.scan.next();
+		if(account_num.equals("0")) return;
 		
+		System.out.print("\t 송금하실 계좌 번호를 입력하세요.");
 		
 		try {
 			String name = "";
-			String accountNum = Menu.scan.next();
+			String transferAccountNum = Menu.scan.next();
 			boolean check = false;
+
+			SqlSession session = sqlSessionFactory.openSession();
+			DBDAO dao = new DBDAO();
+			List<UserDTO> transfer_user_list = dao.transfer_user_key(session, transferAccountNum);
 			
-			for(AccountDTO key : dbDAO.login_user_account(session, loginedUser.getUser_key())) {		
-				if(accountNum.equals(key.getAccount_num())) {
-					name = loginedUser.getName();
-					check = true; 
-					break;		
+			for(AccountDTO dto : list) {		
+				if(dto.getIs_temporary().equals("0")) {
+					
+					/* 출금 계좌와 송금 계좌가 같을 시 */
+					if (transferAccountNum.equals(account_num)) {
+						System.out.println("\t 같은 계좌로의 송금은 불가합니다");
+						break;
+					}
+					
+					/* 정상 계좌가 아닌지 (name == null) 체크 후 넘기기 */
+					for (UserDTO dto2 : transfer_user_list) {
+						transfer_user_key = dto2.getUser_key();
+						name = dto2.getName();
+						
+						if (name != null) check = true; 
+						break;		
+					}
 				}
 			}
+			
 			if(check == false) {
-				System.out.println("계좌번호를 확인해주세요."); 
+				System.out.println("\t 계좌번호를 확인해주세요."); 
 				return;
 			}
 			
@@ -216,27 +250,35 @@ public class UserATM_Impl implements UserATM {
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 			System.out.println("\t  ┃                 *");
-			System.out.println("\t  ┃ 받으실분의 계좌 : " + accountNum);
+			System.out.println("\t  ┃ 받으실분의 계좌 : " + transferAccountNum);
 			System.out.println("\t  ┃ 받으실분의 성함 : " + name);
 			System.out.println("\t  ┃                 *");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
 			System.out.println("\t  ┃                   *");
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-			System.out.print("\t   입금하실 금액을 입력해주세요 [취소:0] :");
+			
+			System.out.print("\t 송금하실 금액을 입력해주세요 [취소:0] :");
 			
 			try {
 				int money = Menu.scan.nextInt();
-					
+				if(Integer.toString(money).equals("0")) return;
+				
 				/* 금액이 0원이하이거나 1000원 단위가 아닐때 */
 				if(money <= 0 || money % 1000 != 0) {
-					System.out.println("1000원 단위로 입력해주세요.");
+					System.out.println("\t 1000원 단위로 입력해주세요.");
 					return;
 				}
+				
 				/* 금액이 모자랄때 */
-				if(money > balance) {
-					System.out.println("잔액이 모자랍니다.");
-					return;
+				for(AccountDTO dto : list) {										
+					if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) {
+						if(money > dto.getBalance()) {
+							System.out.println("\t 잔액이 모자랍니다.");
+							return;
+						}
+					}
 				}
+				
 				DecimalFormat df = new DecimalFormat("###,###");
 				String formatMoney = df.format(money);
 				
@@ -247,32 +289,43 @@ public class UserATM_Impl implements UserATM {
 				System.out.println("\t  ┃		      ┃");
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 				System.out.println("\t  ┃                 *");
-				System.out.println("\t  ┃ 받으실분의 계좌 : " + accountNum);
+				System.out.println("\t  ┃ 받으실분의 계좌 : " + transferAccountNum);
 				System.out.println("\t  ┃ 받으실분의 성함 : " + name);
 				System.out.println("\t  ┃ 송금 금액 : " + formatMoney + "원");
 				System.out.println("\t  ┃                 *");
 				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
 				System.out.println("\t  ┃                   *");
 				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
-				System.out.print("\t   송금 [1] 취소 [0] : ");
-				System.out.println("");
+				System.out.print("\t 송금 [1] 취소 [0] : ");
 				
 				String sel = Menu.scan.next();
 				
 				if(!sel.equals("1")) return;
 				
-				System.out.print("비밀번호 : ");
+				System.out.print("\t 비밀번호 : ");
 				String pw = Menu.scan.next();
-				if(!userCheckPassWord(pw)) return;
+				
+				for (AccountDTO dto : list) {
+					if(!userCheckPassWord(pw, dto)) return;
+				}
 				
 				int cash = accountDTO.getBalance();
 				
 				/* 받는사람의 계좌, 금액 + */
-				userAccount(accountNum, cash + money);	
+				List<AccountDTO> transfer_user_account = dao.login_user_account(session, transfer_user_key);
+				
+				for(AccountDTO dto : transfer_user_account) {
+					if (dto.getIs_temporary().equals("0") && transferAccountNum.equals(dto.getAccount_num())) {
+						userAccount(dto.getAccount_num(), dto.getBalance() + money);	
+					}
+				}
 				
 				/* 보낸사람의 계좌, 금액 - */
-				for(AccountDTO dto : list) 
-					userAccount(dto.getAccount_num(), balance - money);	
+				for(AccountDTO dto : list) {
+					if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) {
+						userAccount(dto.getAccount_num(), dto.getBalance() - money);	
+					}
+				}
 				
 				try {
 					Thread.sleep(1000);
@@ -281,14 +334,16 @@ public class UserATM_Impl implements UserATM {
 				}
 				
 				userReceipt(loginedUser);
-			}catch(Exception e) {
-				System.out.println("잘못 입력하셨습니다.");
+				
+			} catch(Exception e) {
+				System.out.println("\t 잘못 입력하셨습니다.");
 				return;
 			}	
 		
-		}catch(Exception e) {
-			System.out.println("잘못 입력하셨습니다.");
-		}
+		} catch(Exception e) {
+			System.out.println("\t 잘못 입력하셨습니다.");
+		} 
+		
 		System.out.println();
 	}
 
@@ -356,7 +411,7 @@ public class UserATM_Impl implements UserATM {
 				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
 				System.out.println("");
 				
-				/* 남아있던 잔액 을 비교하여 입금/출금 을 확인합니다. */
+				/* 남아있던 잔액을 비교하여 입금/출금 확인 */
 				checkBalance = money;
 				
 				/* 통장거래 내역 횟수를 확인할 변수 */
@@ -429,8 +484,10 @@ public class UserATM_Impl implements UserATM {
 	}
 
 	@Override
-	public boolean userCheckPassWord(String pw) {
-		if(userPw.equals(pw)) {
+	public boolean userCheckPassWord(String pw, AccountDTO accountDTO) {
+		String accountPW = dbDAO.Decryptonize_pw(accountDTO.getAccount_password(), dbDAO.create_random_seed());
+		
+		if(accountPW.equals(pw)) {
 			System.out.println("송금 진행중입니다..");
 			return true;
 		}

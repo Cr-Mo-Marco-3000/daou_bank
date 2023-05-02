@@ -38,6 +38,14 @@
 		FROM ACCOUNT
 		WHERE USER_KEY = #{user_key}
   </select> 
+
+   <select id="transfer_user_key" parameterType="String" resultType = "dto.UserDTO" >
+		SELECT * 
+		FROM BANK_USER
+		WHERE USER_KEY = (SELECT user_key 
+						  FROM ACCOUNT 
+						  WHERE ACCOUNT_NUM = #{account_num})
+  </select> 
  
    
 </mapper>
