@@ -7,6 +7,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import dao.DBDAO;
 import dao.ManagerDAO;
 import dto.UserDTO;
 import exception.DeleteEmployeeFailException;
@@ -50,7 +51,13 @@ public class ManagerServiceImpl implements ManagerService {
 	@Override
 	public int registerEmployee (UserDTO user) throws EmployeeCreationFailException {
 		int num = 0;
+		
+		// 암호화
+		DBDAO dbdao = new DBDAO();
+
+		user.setUser_password(dbdao.Encryptonize_pw(user.getUser_password(), dbdao.create_random_seed()));
 		SqlSession session = sqlSessionFactory.openSession();
+		System.out.println(user);
 		try {
 			ManagerDAO dao = new ManagerDAO();
 			// 직원 등록
