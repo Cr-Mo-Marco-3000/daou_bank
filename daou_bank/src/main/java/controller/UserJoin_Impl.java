@@ -121,7 +121,7 @@ Menu menu = Menu.getInstance();
 			session.commit();
 			
 		} catch(Exception e) {
-			System.out.println("회원가입 정보가 잘못되었습니다.");
+			System.out.println("\t 회원가입 정보가 잘못되었습니다.");
 			session.rollback();
 		} finally {
 			session.close();
@@ -139,9 +139,9 @@ Menu menu = Menu.getInstance();
 		DBDAO user_login_dao = new DBDAO();
 		UserDTO userdto;
 		
-		System.out.println("아이디를 입력하세요:");
+		System.out.print("\t 아이디를 입력하세요 : ");
 		String id = Menu.scan.next();
-		System.out.println("비밀번호를 입력하세요:");
+		System.out.print("\t 비밀번호를 입력하세요 : ");
 		String pw = Menu.scan.next();
 		try {
 			userdto = new UserDTO(id,pw);
@@ -149,7 +149,7 @@ Menu menu = Menu.getInstance();
 			logined_User = user_login_dao.login_user_info(session, userdto);
 
 			if(logined_User != null ){	
-				System.out.println(" [ " + logined_User.getName()+" ] 님 환영합니다.");
+				System.out.println("\n\t[ " + logined_User.getName()+" ] 님 환영합니다.");
 				UserATM_Impl.userId = id;
 				if (logined_User.getType().equals("Customer")) {
 					menu.userView(logined_User);
@@ -158,10 +158,10 @@ Menu menu = Menu.getInstance();
 					menu.EmployeeView(logined_User);
 				}
 			}else {
-				System.out.println("아이디 & 비밀번호를 확인해주세요.");
+				System.out.println("\t 아이디 & 비밀번호를 확인해주세요.");
 			}
 		} catch(Exception e) {
-			System.out.println("로그인 정보가 잘못 되었습니다. 다시 입력 해주세요. ");
+			System.out.println("\t 로그인 정보가 잘못 되었습니다. 다시 입력 해주세요. ");
 		} finally {
 			session.close();
 		}

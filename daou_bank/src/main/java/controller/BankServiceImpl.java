@@ -31,10 +31,10 @@ public class BankServiceImpl {
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			BankDAO dao = new BankDAO();
-			System.out.println(num + "되나?");
+			System.out.println("\t" + num + "되나?");
 			num = dao.deleteOutdatedTemporaryAccount(session);
 			session.commit();
-			System.out.println("서비스 실행!");
+			System.out.println("\t 서비스 실행!");
 		} finally {
 			session.rollback();
 			session.close();

@@ -46,13 +46,13 @@ public class EmployeeServiceImpl implements EmployeeService {
  	    List<AccountDTO> accountList = dao.getAccountRequests(session);
  	    try {
  	        if (accountList == null || accountList.isEmpty()) {
- 	            throw new AccountRequestNotFoundException("계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다.");
+ 	            throw new AccountRequestNotFoundException("\t 계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다.");
  	        }
  	    } catch (AccountRequestNotFoundException e) {
- 	        System.out.println("계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다. " + e.getMessage());
+ 	        System.out.println("\t 계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다. " + e.getMessage());
  	        session.rollback();
  	    } catch (Exception e) {
- 	        System.out.println("계좌 생성 요구 조회 중 예외가 발생했습니다: " + e.getMessage());
+ 	        System.out.println("\t 계좌 생성 요구 조회 중 예외가 발생했습니다: " + e.getMessage());
  	        session.rollback();
  	    } finally {
  	        session.close();
@@ -71,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	        // 중복 여부 검사
 	        int count = session.selectOne("mybatis.EmployeeMapper.isDuplicatedCustomer", user.getUserId());
 	        if (count > 0) {
-	            throw new DuplicateCustomerException("이미 등록된 고객입니다.");
+	            throw new DuplicateCustomerException("\t 이미 등록된 고객입니다.");
 	        }
 	        // 고객 등록
 	        // UserDTO 객체를 매개변수로 받아 새로운 고객을 등록 
@@ -82,13 +82,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 	        // insert 메서드가 반환하는 값은 삽입된 레코드 수
 	        // 이 값이 1이 아니면, 고객 등록에 실패한 것으로 판단하여 CustomerEnrolFailException 예외를 발생
 	        if (n != 1) {
-	            throw new CustomerEnrolFailException("고객 등록에 실패했습니다.");
+	            throw new CustomerEnrolFailException("\t 고객 등록에 실패했습니다.");
 	        }
 	        return n;
 	    } catch (DuplicateCustomerException e) {
 	        throw e;
 	    } catch (Exception e) {
-	        throw new CustomerEnrolFailException("고객 등록 중 예외가 발생했습니다.");
+	        throw new CustomerEnrolFailException("\t 고객 등록 중 예외가 발생했습니다.");
 	    }finally {
 	    	session.rollback();
 			session.close();
@@ -104,7 +104,7 @@ public class EmployeeServiceImpl implements EmployeeService {
              EmployeeDAO dao = new EmployeeDAO();
              int count = dao.approveCustomer(session, user_id);
              if (count != 1) {
-                 throw new CustomerAccountApprovalException("고객 계정 승인 실패: 대포통장 의심 거래자입니다. 다시 확인하세요. ");
+                 throw new CustomerAccountApprovalException("\t 고객 계정 승인 실패: 대포통장 의심 거래자입니다. 다시 확인하세요. ");
              }
              session.commit();
          }finally {
@@ -122,17 +122,17 @@ public class EmployeeServiceImpl implements EmployeeService {
  	        // user_id 중복 확인 
  	        int count = session.selectOne("mybatis.EmployeeMapper.getAccountRequests", user_id);
  	        if (count != 1) {
- 	            throw new AccountRequestNotFoundException("해당 계좌 생성 요청이 존재하지 않습니다.");
+ 	            throw new AccountRequestNotFoundException("\t 해당 계좌 생성 요청이 존재하지 않습니다.");
  	        }
 
  	        // 계좌 삭제 
  	        result = session.delete("mybatis.EmployeeMapper.deleteAccountRequest", user_id);
  	        session.commit();
- 	        System.out.println("계좌 생성 요청이 거절되었습니다.");
+ 	        System.out.println("\t 계좌 생성 요청이 거절되었습니다.");
  	    } catch (AccountRequestNotFoundException e) {
  	        System.out.println(e.getMessage());
  	    } catch (Exception e) {
- 	        System.out.println("계좌 생성 요청 거절 중 예외가 발생했습니다: " + e.getMessage());
+ 	        System.out.println("\t 계좌 생성 요청 거절 중 예외가 발생했습니다: " + e.getMessage());
  	    }finally {
  	    	session.rollback();
  			session.close();
@@ -149,12 +149,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 	EmployeeDAO dao = new EmployeeDAO();
 	 	UserDTO user = dao.getCustomerById(session, user_id);
 	 	if (user == null) {
-	 		throw new CustomerInfocheckFailException("고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
+	 		throw new CustomerInfocheckFailException("\t 고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
 	 	}
 	 	    session.commit();
 	 		return user;
 	 	} catch (CustomerInfocheckFailException e) {
-	 		System.out.println("고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다." + e.getMessage());
+	 		System.out.println("\t 고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다." + e.getMessage());
 	 	throw e; // 예외를 호출한 측으로 
 	 	} finally {
 	 		session.close();
@@ -170,7 +170,7 @@ public class EmployeeServiceImpl implements EmployeeService {
  	        EmployeeDAO dao = new EmployeeDAO();
  	        List<UserDTO> userList = dao.getAllCustomers(session);
  	        if (userList == null || userList.isEmpty()) {
- 	            throw new AllCustomerInfocheckFailException("모든 고객 정보 조회 실패: 조회된 데이터가 없습니다.");
+ 	            throw new AllCustomerInfocheckFailException("\t 모든 고객 정보 조회 실패: 조회된 데이터가 없습니다.");
  	        }
  	        session.commit();
  	        return userList;
