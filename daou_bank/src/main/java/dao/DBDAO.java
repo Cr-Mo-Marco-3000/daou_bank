@@ -49,8 +49,6 @@ public class DBDAO {
 		// 암호화를 위한 랜덤 시드 생성 ================================
 		
 
-		
-		
 		// 동일한 아이디가 있는지 확인하는 메서드 (중복 ID 체크)
 		public boolean check_Id(SqlSession session, String id) {
 			boolean Is_in_userid = false;
@@ -65,9 +63,7 @@ public class DBDAO {
 		public boolean check_dupli_user_db(SqlSession session, UserDTO dto) {
 			
 			boolean is_user_in_db = false;
-			System.out.println(dto);
 			List<UserDTO>select_check_user = session.selectList("User_check_sign_up", dto);	
-			System.out.println(select_check_user.size());
 			if (select_check_user.size() != 0)
 				is_user_in_db = true;
 			return is_user_in_db;
@@ -90,16 +86,14 @@ public class DBDAO {
 		}
 		
 		// 로그인 정보의 [ Account0, Account1, ... ] 리스트를 반환하는 메서드
-		public List<AccountDTO> login_user_account(SqlSession session, UserDTO dto) {
-			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",dto);
-			System.out.println(login_user_account_lst.toString());
+		public List<AccountDTO> login_user_account(SqlSession session, int user_key) {
+			List <AccountDTO> login_user_account_lst = session.selectList("Login_user_account_list",user_key);
 			return login_user_account_lst;
 		}
 				
 		// 로그인 정보의 [ tmp_Account0, tmp_Account1, ... ] 리스트를 반환하는 메서드
 		public List<AccountDTO> login_user_tmp_account(SqlSession session, UserDTO dto) {
 			List <AccountDTO> login_user_tmp_account_lst = session.selectList("Login_user_tmp_account_list",dto);
-			System.out.println(login_user_tmp_account_lst.toString());
 			return login_user_tmp_account_lst;
 		}
 		
@@ -125,10 +119,7 @@ public class DBDAO {
 			  int str_len = seed.length();
 			  int tmp=0;
 			  String tmp_str = "";
-			  System.out.println(tmp_str);
-			  System.out.println(seed);
 			  tmp_str = str_len+seed;
-			  System.out.println(tmp_str);
 			 
 			  for (int c_idx = 0 ; c_idx < str_len;c_idx++) {
 				  if (c_idx %2 ==0) {
@@ -137,31 +128,25 @@ public class DBDAO {
 			  }
 			  
 			  while(tmp>10) {
-				  System.out.println(tmp);
 				  tmp_str = "" + tmp;
 				  tmp = 0;
 				  for (int idx = 0 ; idx < tmp_str.length();idx++) {
 					  tmp += Integer.parseInt("" + tmp_str.charAt(idx));
 				  }
 			  }
-			  System.out.println(tmp);
 			  return tmp;
 		  }
 		  
 	   // 암호화하는 메서드
 		  public String Encryptonize_pw(String input_pw, int seed) {
-			  System.out.println(input_pw);
-			  
 			  char []ch_pw_token = input_pw.toCharArray();
 			  String Encrypt_pw;
 			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  ch_pw_token[idx]-=seed;
+				  ch_pw_token[idx]-=(seed+idx);
 				  idx++;
 				  }
 			  Encrypt_pw = String.valueOf(ch_pw_token);
-			  System.out.println(Encrypt_pw);
-			  
 			  
 			  return Encrypt_pw;
 		  }
@@ -172,7 +157,7 @@ public class DBDAO {
 			  String Decrypt_pw;
 			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  ch_pw_token[idx]+=6;
+				  ch_pw_token[idx]+=(seed+idx);
 				  idx++;
 			  }
 			  Decrypt_pw = String.valueOf(ch_pw_token);

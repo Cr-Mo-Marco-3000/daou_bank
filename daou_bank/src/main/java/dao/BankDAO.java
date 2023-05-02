@@ -53,10 +53,17 @@ public class BankDAO {
 		}
 
 		// 계좌 잔액 업데이트
-		public int updateBalance(AccountDTO dto) {
+		public int updateBalance(String account, int balance) {
 			SqlSession session = sqlSessionFactory.openSession();
 			
+			AccountDTO dto = new AccountDTO();
+			
+			dto.setAccount_num(account);
+			dto.setBalance(balance);
+
 			int result = session.update("updateBalance", dto);
+			
+			session.commit();
 			
 			return result;
 		}
