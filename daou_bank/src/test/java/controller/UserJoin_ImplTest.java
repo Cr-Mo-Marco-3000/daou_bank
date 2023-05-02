@@ -1,64 +1,37 @@
 package controller;
 
-import java.io.File;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.jupiter.api.Test;
 
 import dao.DBDAO;
-import dto.AccountDTO;
 import dto.UserDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import view.Menu;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserJoin_Impl implements UserJoin{
+class UserJoin_ImplTest {
 
-public static String userId;
-private static UserJoin_Impl userJoin = new UserJoin_Impl();
-public static UserATM_Impl userImpl = new UserATM_Impl();
-Menu menu = Menu.getInstance();
-	
-	public static UserJoin_Impl getInstance() {
-		if(userJoin == null) {
-			userJoin = new UserJoin_Impl();
-		}
-		return userJoin;
-	}
-	
-	// SQL 세션을 위한 기본설정 =============================================================================
 	static SqlSessionFactory sqlSessionFactory;
+
+    static {
+        String resource = "mybatis/Configuration.xml";
+        InputStream inputStream = null;
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    } 
 	
-	static {
-		String resource = "mybatis/Configuration.xml";
-		InputStream inputStream = null;
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		sqlSessionFactory =
-		  new SqlSessionFactoryBuilder().build(inputStream);
-	}
-	
-	
-	// ==================================================================================================================
-	// 회원 가입 메서드
-	@Override
-	public void userSignup() {
-		
+	@Test
+	void test() {
 		SqlSession session = sqlSessionFactory.openSession();
 		UserDTO userdto = new UserDTO();
 		DBDAO db_dao = new DBDAO();
@@ -99,6 +72,7 @@ Menu menu = Menu.getInstance();
 			/* 회원정보 저장 */ 
 			userdto = new UserDTO(id,pw,name,birth_day);
 			/*회원가입 메소드 userSingup() 에서 중복된 아이디가 있으면*/
+			assertEquals(false, db_dao.check_dupli_user_db(session, userdto));
 			if (db_dao.check_dupli_user_db(session, userdto)) {
 				System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
 				System.out.println("\t  ┃                 *");
@@ -126,46 +100,7 @@ Menu menu = Menu.getInstance();
 		} finally {
 			session.close();
 		}
-		
-	}
-	
-	// ==================================================================================================================
-	// 로그인
-	@Override
-	public void userLogin(UserDTO logined_User) {
-		
-		SqlSession session = sqlSessionFactory.openSession();		
-		
-		DBDAO user_login_dao = new DBDAO();
-		UserDTO userdto;
-		
-		System.out.println("아이디를 입력하세요:");
-		String id = Menu.scan.next();
-		System.out.println("비밀번호를 입력하세요:");
-		String pw = Menu.scan.next();
-		try {
-			userdto = new UserDTO(id,pw);
-			userdto.setUser_password(user_login_dao.Encryptonize_pw(userdto.getUser_password(), user_login_dao.create_random_seed()));
-			logined_User = user_login_dao.login_user_info(session, userdto);
 
-			if(logined_User != null ){	
-				System.out.println(" [ " + logined_User.getName()+" ] 님 환영합니다.");
-				UserATM_Impl.userId = id;
-				if (logined_User.getType().equals("Customer")) {
-					menu.userView(logined_User);
-				}
-				else {
-					menu.EmployeeView(logined_User);
-				}
-			}else {
-				System.out.println("아이디 & 비밀번호를 확인해주세요.");
-			}
-		} catch(Exception e) {
-			System.out.println("로그인 정보가 잘못 되었습니다. 다시 입력 해주세요. ");
-		} finally {
-			session.close();
-		}
-		return;
-		
 	}
+
 }
