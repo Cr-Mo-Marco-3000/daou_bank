@@ -149,7 +149,7 @@ public class DBDAO {
 			  String Encrypt_pw;
 			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  ch_pw_token[idx]-=seed;
+				  ch_pw_token[idx]-=(seed+idx);
 				  idx++;
 				  }
 			  Encrypt_pw = String.valueOf(ch_pw_token);
@@ -163,7 +163,7 @@ public class DBDAO {
 			  String Decrypt_pw;
 			  int idx = 0;
 			  for (char token:ch_pw_token) {
-				  ch_pw_token[idx]+=6;
+				  ch_pw_token[idx]+=(seed+idx);
 				  idx++;
 			  }
 			  Decrypt_pw = String.valueOf(ch_pw_token);

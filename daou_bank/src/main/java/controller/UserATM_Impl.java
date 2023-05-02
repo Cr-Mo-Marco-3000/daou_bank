@@ -458,6 +458,9 @@ public class UserATM_Impl implements UserATM {
 			if (input_pw_int != input_pw_check_int) {
 				System.out.println("비밀번호가 일치하지 않습니다.");
 			}
+			else if (input_pw_int>9999 || input_pw_int < 0 ) {
+				System.out.println("비밀번호는 4자리 정수 ( Ex) 0000 ) 형식으로 입력해주시기 바랍니다.");
+			}
 		} while(input_pw_int>9999 || input_pw_int < 0 || input_pw_int != input_pw_check_int); // do-while()문 end
 				
 		try {
@@ -502,8 +505,10 @@ public class UserATM_Impl implements UserATM {
 		
 		List<AccountDTO> list = getAccountList(loginedUser);
 		
+		DecimalFormat df = new DecimalFormat("###,###");
+		
 		System.out.printf("      [%s] 님의 마이 페이지 입니다.\n",loginedUser.getName());
-		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━* ");
+		System.out.println("  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓* ");
 		System.out.println("  ┃  개인 정보 ");
 		System.out.println("  ┃  ");
 		System.out.println("  ┃    Name : " + loginedUser.getName());
@@ -518,18 +523,19 @@ public class UserATM_Impl implements UserATM {
 			if (dto.getIs_temporary().equals("0")) {
 				System.out.printf("  ┃  %d 번째 계좌", account_cnt);
 				System.out.println("  ┃  계좌번호 : " + dto.getAccount_num());
-				System.out.println("  ┃  잔고 : " + dto.getBalance());
-				System.out.println("  ┃  생성날짜 : " + dto.getCreate_date());
+				System.out.println("  ┃  \t잔고 : " + df.format(dto.getBalance()));
+				System.out.println("  ┃  \t생성날짜 : " + dto.getCreate_date().toString().substring(0, 10) );
 				System.out.println("  ┃  - - - - - - - - - - - - - - -" );			
 			}
 		}
 		System.out.println("  ┃ ========================");
 		System.out.println("  ┃ ");
 		System.out.println("  ┃  계좌 개설 요청 정보 ");
-
+		System.out.println("  ┃  ");
+		
 		AtomicInteger tmp_index = new AtomicInteger();
 		Predicate<AccountDTO> is_tmp_account = dto -> dto.getIs_temporary().equals("1");
-		Consumer<AccountDTO> print_account_tmp = dto -> System.out.println("  ┃  " + (tmp_index.getAndIncrement()+1) + "번쨰 생성 요청 ---\n  ┃    생성 요청 일자 : " + dto.getCreate_date().toString() + "\n  ┃  ");
+		Consumer<AccountDTO> print_account_tmp = dto -> System.out.println("  ┃  " + (tmp_index.getAndIncrement()+1) + " 번째 생성 요청 ---\n  ┃    생성 요청 일자 : " + dto.getCreate_date().toString().substring(0, 10) + "\n  ┃  ");
 		Stream <AccountDTO> account_stream = list.stream();
 				
 		account_stream.filter(is_tmp_account).forEach(print_account_tmp);
@@ -539,10 +545,10 @@ public class UserATM_Impl implements UserATM {
 			System.out.println("  ┃  계좌가 [텅] 비어있습니다.");
 		}
 		System.out.println("  ┃ ");
-		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + account_balance_total_sum + "원 입니다." );
+		System.out.println("  ┃    [ " + loginedUser.getName() + " ]님의 총 자산은 " + df.format(account_balance_total_sum) + "원 입니다." );
 		System.out.println("  ┃ ");
 		System.out.println("  ┃                 *");
-		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+		System.out.println("  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
 		
 	}
 	

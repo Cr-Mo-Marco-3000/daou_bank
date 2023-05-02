@@ -31,7 +31,7 @@ public class Menu {
 	public static UserJoin_Impl userJoin = new UserJoin_Impl();
 	
 	// 로그인한 유저 데이터 담는 객체 생성
-	private static UserDTO loginedUser;
+	private static UserDTO loginedUser = new UserDTO();
 
 	// 싱글톤
 	private static Menu menu = new Menu();
@@ -61,7 +61,6 @@ public class Menu {
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 			System.out.println("\t  ┃ 1) 로그인");			
 			System.out.println("\t  ┃ 2) 회원가입");
-			System.out.println("\t  ┃ 3) 관리자 로그인(임시)");
 			System.out.println("\t  ┃ 0) 종료하기");
 			System.out.println("\t  ┃     ");
 			System.out.print("\t  ┃ 메뉴 입력 : ");
@@ -82,13 +81,8 @@ public class Menu {
 					userJoin.userSignup();
 					break;
 					
-				case ("3"):
-					// 임시 회원 => 나중에 삭제 요망
-					loginedUser = new UserDTO(
-							1, "bizyoung93", "123123", "Manager", "김현영", "1993/03/29");
-					EmployeeView();
-					break;
 				case ("0"): 
+					loginedUser = null;
 					System.out.println("Good Bye *");	
 					System.exit(0);return;
 					
@@ -169,7 +163,8 @@ public class Menu {
 	}
 		
 	// 직원이 로그인하면 보이는 뷰
-	public void EmployeeView() {
+	public void EmployeeView(UserDTO userdto) {
+		loginedUser = userdto;
 		while(true) {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
@@ -184,7 +179,7 @@ public class Menu {
 			System.out.println("\t  ┃ 5) 고객 계좌 생성 거절");
 			System.out.println("\t  ┃ 6) 전체 회원 정보 조회");
 			// 직원이 매니저일 경우, 해당 메뉴들이 보입니다.
-			if (loginedUser.getType() == "Manager") {
+			if (loginedUser.getType().equals("Manager")) {
 				System.out.println("\t  ┃ 7) 직원 등록");
 				System.out.println("\t  ┃ 8) 관리자 권한 인계");
 				System.out.println("\t  ┃ 9) 직원 삭제");
