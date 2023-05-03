@@ -26,8 +26,7 @@ public class Menu {
 	public static UserJoin_Impl userJoin = new UserJoin_Impl();
 	
 	// 로그인한 유저 데이터 담는 객체 생성
-	private static UserDTO loginedUser;
-	private static List<AccountDTO> login_User_account_list;
+	private static UserDTO loginedUser = new UserDTO();
 
 	// 싱글톤
 	private static Menu menu = new Menu();
@@ -51,12 +50,12 @@ public class Menu {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
 			System.out.println("\t┃			┃");
+			System.out.println("\t┃			");
 			System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 			System.out.println("\t  ┃ 1) 로그인");			
 			System.out.println("\t  ┃ 2) 회원가입");
-			System.out.println("\t  ┃ 3) 관리자 로그인(임시)");
 			System.out.println("\t  ┃ 0) 종료하기");
 			System.out.println("\t  ┃     ");
 			System.out.print("\t  ┃ 메뉴 입력 : ");
@@ -70,36 +69,29 @@ public class Menu {
 			switch(menu) {
 			
 				case ("1"):
-					userJoin.userLogin(loginedUser,login_User_account_list);
+					userJoin.userLogin(loginedUser);
 					break;
 					
 				case ("2"):
 					userJoin.userSignup();
 					break;
 					
-				case ("3"):
-					// 임시 회원 => 나중에 삭제 요망
-					loginedUser = new UserDTO(
-							1, "bizyoung93", "123123", "Manager", "김현영", "1993/03/29");
-					EmployeeView();
-					break;
 				case ("0"): 
+					loginedUser = null;
 					System.out.println("Good Bye *");	
 					System.exit(0);return;
 					
 				default:
 					System.out.println("다시 입력해주세요 :)");
-				}	
-			
-			
-			}
+			}	
+		
 		}
+	}
 		
 	// 일반 유저가 로그인하면, 보이는 메뉴입니다. 
-	public void userView(UserDTO userdto, List<AccountDTO> account_list) {
+	public void userView(UserDTO userdto) {
 
 		loginedUser = userdto;
-		login_User_account_list = account_list;
 			
 		while(true) {
 			System.out.println("");
@@ -126,23 +118,22 @@ public class Menu {
 		
 			switch(menu) {
 				case ("1"):
-					userImpl.userBalance();
+					userImpl.userBalance(loginedUser);
 					break;
 						
 				case ("2"):
-					userImpl.userDeposit();
+					userImpl.userDeposit(userdto);
 					break;
 				
 				case ("3"):
-					userImpl.userWithdraw();
+					userImpl.userWithdraw(loginedUser);
 					break;
-					
 				case ("4"):
-					userImpl.userTransfer();
+					userImpl.userTransfer(loginedUser);
 					break;
 					
 				case ("5"):
-					userImpl.userHistory();
+					userImpl.userHistory(loginedUser);
 					break;
 					
 				case ("6"):
@@ -150,24 +141,25 @@ public class Menu {
 					break;
 					
 				case ("7"):
-					userImpl.showInfo(loginedUser,login_User_account_list);
-				break;
+					userImpl.showInfo(loginedUser);
+					break;
 				
 				case ("0"): 
 					System.out.println("로그아웃 합니다.");
 					loginedUser = null;
-					login_User_account_list = null;
 					loginMenu();
 					break;
+					
 				default:
 					System.out.println("없는 메뉴를 선택하셨습니다");
-					userView(loginedUser,login_User_account_list);
+					userView(loginedUser);
 			}	
 		}
 	} 
 	 	
 	// 직원이 로그인하면 보이는 뷰
-	public void EmployeeView() {
+	public void EmployeeView(UserDTO userdto) {
+		loginedUser = userdto;
 		while(true) {
 			System.out.println("");
 			System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
@@ -179,7 +171,7 @@ public class Menu {
 			System.out.println("\t  ┃ 2) 고객 정보 열람");
 			System.out.println("\t  ┃ 3) 고객 계좌 생성 승인");
 			// 직원이 매니저일 경우, 해당 메뉴들이 보입니다.
-			if (loginedUser.getType() == "Manager") {
+			if (loginedUser.getType().equals("Manager")) {
 				System.out.println("\t  ┃ 4) 직원 등록");
 				System.out.println("\t  ┃ 5) 관리자 권한 인계");
 				System.out.println("\t  ┃ 6) 직원 삭제");
@@ -383,7 +375,6 @@ public class Menu {
 			}  else if (menu == 0) {
 				System.out.println("로그아웃을 선택하셨습니다.");
 				loginedUser = null;
-				login_User_account_list = null;
 				loginMenu();
 				return;
 			} else {
