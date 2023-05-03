@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
  	    accountList = dao.getAccountRequests(session);
  	    try {
  	        if (accountList == null || accountList.isEmpty()) {
- 	            throw new AccountRequestNotFoundException("\t 계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다.");
+ 	            throw new AccountRequestNotFoundException("\t계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다.");
  	        }
  	        if (session != null) {
  	            session.commit();
@@ -57,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
  	        System.out.println(e.getMessage());
  	        if (session != null);
  	    } catch (Exception e) { 
- 	        System.out.println("계좌 생성 요구 조회 중 예외가 발생했습니다: " + e.getMessage());
+ 	        System.out.println("\t계좌 생성 요구 조회 중 예외가 발생했습니다: " + e.getMessage());
  	        if (session != null);
  	    } finally {
  	        if (session != null) {
@@ -75,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		 	EmployeeDAO dao = new EmployeeDAO();
 		 	UserDTO user = dao.getCustomerById(session, user_id);
 		 	if (user == null) {
-		 		throw new CustomerInfocheckFailException("\t 고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
+		 		throw new CustomerInfocheckFailException("\t고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
 		 	}
 	 	    session.commit();
 	 		return user;
@@ -96,7 +96,7 @@ public class EmployeeServiceImpl implements EmployeeService {
  		int count = dao.approveCustomer(session, account_num);
  		session.commit();
  	if (count != 1) {
- 		throw new CustomerAccountApprovalException("고객 계정 승인 실패: 대포통장 의심 거래자입니다. 다시 확인하세요. ");
+ 		throw new CustomerAccountApprovalException("\t고객 계정 승인 실패: 대포통장 의심 거래자입니다. 다시 확인하세요. ");
  	}
  		session.commit();
  	} catch (Exception e) {
