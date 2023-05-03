@@ -13,19 +13,16 @@ import exception.CustomerAccountRejectionException;
 import exception.CustomerEnrolFailException;
 import exception.CustomerInfocheckFailException;
 import exception.DuplicateCustomerException;
+import exception.EmployeeCreationFailException;
 
 public interface EmployeeService { 
 
-	List<AccountDTO> getAccountRequests() throws AccountRequestNotFoundException; 
-	
-    int registerCustomer(UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException; 
+	List<AccountDTO> getAccountRequests() throws AccountRequestNotFoundException; // 계좌 생성 요청 조회
 
-    void approveCustomer(String user_id) throws CustomerAccountApprovalException;
+    void approveCustomer(String user_id) throws CustomerAccountApprovalException; // 고객 계좌 승인 
 
-    UserDTO getCustomerById(String user_id) throws CustomerInfocheckFailException;
+    UserDTO getCustomerById(String user_id) throws CustomerInfocheckFailException; // 고객 정보 조회
 
-    List<UserDTO> getAllCustomers() throws AllCustomerInfocheckFailException;
 
-	int rejectAccountRequest(String user_id) throws CustomerAccountRejectionException;
 
 }
