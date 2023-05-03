@@ -86,7 +86,7 @@ class UserDTOTest {
 	  @Test
 	  void testEncrypt () { // rnlduaQhWkr123
 		  System.out.println("입력되는 암호 문자열:");
-		  String checkString = "cutie_Jongoh_1004";
+		  String checkString = "1234";
 		  System.out.println(checkString);
 		  System.out.println();
 		  

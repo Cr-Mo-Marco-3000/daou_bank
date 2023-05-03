@@ -92,7 +92,7 @@ Menu menu = Menu.getInstance();
 		System.out.print("\t  ┃  이름을 입력하세요 : ");
 		String name = Menu.scan.next();
 		if(name.equals("0")) return;
-		System.out.print("\t  ┃  생년월일을 입력하세요 : ");
+		System.out.print("\t  ┃  생년월일을 입력하세요(8자리) : ");
 		String birth_day = Menu.scan.next();
 		if(birth_day.equals("0")) return;
 		System.out.println("\t  ┃ ");

@@ -160,7 +160,7 @@ public class UserATM_Impl implements UserATM {
 		
 		if (!checkAccount(account_num, userDTO)) return;
 		
-		System.out.print("\t출금하실 금액을 입력해주세요. [취소:0] : ");
+		System.out.print("\t출금하실 금액을 입력해주세요(1000원 단위). [취소:0] : ");
 		try {
 			int money = Menu.scan.nextInt();
 			if(Integer.toString(money).equals("0")) return;
@@ -215,7 +215,7 @@ public class UserATM_Impl implements UserATM {
 		
 		if (!checkAccount(account_num, loginedUser)) return;
 		
-		System.out.print("\t입금하실 금액을 입력해주세요 [취소:0] : ");
+		System.out.print("\t입금하실 금액을 입력해주세요(1000원 단위) [취소:0] : ");
 		try {
 			int money = Menu.scan.nextInt();
 			if(Integer.toString(money).equals("0")) return;
@@ -549,7 +549,7 @@ public class UserATM_Impl implements UserATM {
 
 		// 임시 계좌 생성
 		do {
-			System.out.print("\t개설할 계좌의 비밀번호를 입력해주세요 : ");
+			System.out.print("\t개설할 계좌의 비밀번호를 입력해주세요(4자리) : ");
 			input_pw = scan_pw.next();			
 			System.out.print("\t비밀번호 확인 : ");
 			input_pw_check = scan_pw.next();
