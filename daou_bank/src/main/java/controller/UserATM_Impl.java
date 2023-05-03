@@ -554,9 +554,9 @@ public class UserATM_Impl implements UserATM {
 
 		// 임시 계좌 생성
 		do {
-			System.out.println("\t개설할 계좌의 비밀번호를 입력해주세요");
+			System.out.print("\t개설할 계좌의 비밀번호를 입력해주세요 : ");
 			input_pw = scan_pw.next();			
-			System.out.println("\t비밀번호 확인");
+			System.out.print("\t비밀번호 확인 : ");
 			input_pw_check = scan_pw.next();
 			try {
 				input_pw_int = Integer.parseInt(input_pw);
