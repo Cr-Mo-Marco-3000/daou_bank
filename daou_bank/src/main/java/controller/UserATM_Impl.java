@@ -228,11 +228,6 @@ public class UserATM_Impl implements UserATM {
 			
 			for(AccountDTO dto : list) {
 				if (dto.getIs_temporary().equals("0") && account_num.equals(dto.getAccount_num())) {
-					/* 금액이 모자랄때 */
-					if(money > dto.getBalance()) {
-						System.out.println("\t잔액이 모자랍니다.");
-						return;
-					}
 					
 					/* 계좌 저장 */
 					userAccount(dto.getAccount_num(), dto.getBalance() + money);	
