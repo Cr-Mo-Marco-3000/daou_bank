@@ -55,24 +55,49 @@ class UserDTOTest {
 		  return tmp;
 	  }
 	
-	  public String Encryptonize_pw(String input_pw, int seed) {
-		  
-		  char []ch_pw_token = input_pw.toCharArray();
-		  String Encrypt_pw;
-		  int idx = 0;
-		  for (char token:ch_pw_token) {
-			  ch_pw_token[idx]-=seed;
-			  idx++;
+	   // 암호화하는 메서드
+		  public String Encryptonize_pw(String input_pw, int seed) {
+			  char []ch_pw_token = input_pw.toCharArray();
+			  String Encrypt_pw;
+			  int idx = 0;
+			  for (char token:ch_pw_token) {
+				  ch_pw_token[idx]-=(seed+idx);
+				  idx++;
+				  }
+			  Encrypt_pw = String.valueOf(ch_pw_token);
+			  
+			  return Encrypt_pw;
+		  }
+		  		  
+	   // 복호화하는 메서드
+		  public String Decryptonize_pw(String db_pw, int seed) {
+			  char []ch_pw_token = db_pw.toCharArray();
+			  String Decrypt_pw;
+			  int idx = 0;
+			  for (char token:ch_pw_token) {
+				  ch_pw_token[idx]+=(seed+idx);
+				  idx++;
 			  }
-		  Encrypt_pw = String.valueOf(ch_pw_token);
-		  return Encrypt_pw;
-	  }
+			  Decrypt_pw = String.valueOf(ch_pw_token);
+			  return String.valueOf(Decrypt_pw );
+		  }
 	  
 	  // 정상 출력 예정되는 값 "+,-+,-" 과 Encryptonize_pw 메서드를 통과한 값 비교
 	  @Test
 	  void testEncrypt () { // rnlduaQhWkr123
-//		  System.out.println(Encryptonize_pw("rnlduaQhWkr123", create_random_seed()));
-		  System.out.println(Encryptonize_pw("123123", create_random_seed()));
-		  assertEquals("+,-+,-", Encryptonize_pw("123123", create_random_seed()));
+		  System.out.println("입력되는 암호 문자열:");
+		  String checkString = "cutie_Jongoh_1004";
+		  System.out.println(checkString);
+		  System.out.println();
+		  
+		  System.out.println("암호화된 입력 암호:");
+		  String armho = Encryptonize_pw(checkString, create_random_seed());
+		  System.out.println(armho);
+		  System.out.println();
+		  
+		  System.out.println("복호화된 암호화된 입력 암호:");
+		  String bokho = Decryptonize_pw(Encryptonize_pw(checkString, create_random_seed()), create_random_seed());
+		  System.out.println(bokho);
+		  assertEquals(checkString, bokho);
 	  }
 }
