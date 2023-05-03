@@ -70,7 +70,9 @@ class UserDTOTest {
 	  
 	  // 정상 출력 예정되는 값 "+,-+,-" 과 Encryptonize_pw 메서드를 통과한 값 비교
 	  @Test
-	  void testEncrypt () {
+	  void testEncrypt () { // rnlduaQhWkr123
+//		  System.out.println(Encryptonize_pw("rnlduaQhWkr123", create_random_seed()));
+		  System.out.println(Encryptonize_pw("123123", create_random_seed()));
 		  assertEquals("+,-+,-", Encryptonize_pw("123123", create_random_seed()));
 	  }
 }

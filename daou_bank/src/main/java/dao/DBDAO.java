@@ -17,6 +17,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import dto.AccountDTO;
 import dto.UserDTO;
+import exception.CustomerAccountApprovalException;
 
 public class DBDAO {
 
@@ -106,10 +107,21 @@ public class DBDAO {
 		}
 		
 		// 개설 요청을 위한 임시 계좌번호를 생성하는 메서드
-		public String create_tmp_account_num(SqlSession session, AccountDTO dto) {
-			String tmp_account_num = "";
-			tmp_account_num = session.selectOne("create_account_tmp_num", dto.getAccount_num());
-			return tmp_account_num;
+//		public String create_tmp_account_num(SqlSession session, AccountDTO dto) {
+//			String tmp_account_num = "";
+//			tmp_account_num = session.selectOne("create_account_tmp_num", dto.getAccount_num());
+//			return tmp_account_num;
+//		}
+		
+		// 임시 계좌 요청시, 해당 계좌번호가 이미 존재하는지 확인하는 메서드
+		public int checkDuplicatedAccountNum(SqlSession session, String account_num) throws CustomerAccountApprovalException {
+			int num = 0;
+			try {
+				num = session.selectOne("mybatis.AccountMapper.checkDuplicatedAccountNum", account_num);
+			} catch (Exception e) {
+				throw new CustomerAccountApprovalException("서비스 점검 중입니다. 잠시 뒤에 다시 시도해 주세요");
+			}
+			return num;
 		}
 		
 		

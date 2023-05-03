@@ -39,5 +39,6 @@
 		WHERE USER_KEY = #{user_key}
   </select> 
  
+
    
 </mapper>
