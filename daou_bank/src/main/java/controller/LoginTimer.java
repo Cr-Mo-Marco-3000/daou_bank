@@ -23,7 +23,7 @@ public class LoginTimer extends Thread {
 			if (now.get(Calendar.HOUR_OF_DAY) == checkHour && 
 					now.get(Calendar.MINUTE) == checkMinute && 
 					now.get(Calendar.SECOND) == checkSecond) {
-				System.out.println("씨발");
+
 				BankServiceImpl service = new BankServiceImpl();
 				service.deleteOutdatedTemporaryAccount();
 				try {

@@ -97,6 +97,12 @@ public class DBDAO {
 			return login_user_tmp_account_lst;
 		}
 		
+		// 계좌이체 상대 유저키를 반환하는 메서드
+		public List<UserDTO> user_info_with_account_num(SqlSession session, String account_num) {
+			List <UserDTO> user_list = session.selectList("User_info_with_account_num", account_num);
+			return user_list;
+		}
+
 		// 개설 요청 계좌를 DB에 저장하는 메서드
 		public int insert_account_db(SqlSession session, AccountDTO dto) {
 			int n = 0;
