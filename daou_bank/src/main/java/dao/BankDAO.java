@@ -35,9 +35,9 @@ public class BankDAO {
 		
 		public int deleteOutdatedTemporaryAccount (SqlSession session) {
 			int n = 0;
-			System.out.println("딜리트 시작");
+			System.out.println("\t딜리트 시작");
 			n = session.delete("mybatis.BankMapper.deleteOutdatedTemporaryAccount");
-			System.out.println("딜리트 끝");
+			System.out.println("\t딜리트 끝");
 			return n;
 		}
 
