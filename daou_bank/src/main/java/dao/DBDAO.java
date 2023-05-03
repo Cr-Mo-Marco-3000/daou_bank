@@ -125,7 +125,7 @@ public class DBDAO {
 			try {
 				num = session.selectOne("mybatis.AccountMapper.checkDuplicatedAccountNum", account_num);
 			} catch (Exception e) {
-				throw new CustomerAccountApprovalException("서비스 점검 중입니다. 잠시 뒤에 다시 시도해 주세요");
+				throw new CustomerAccountApprovalException("\t서비스 점검 중입니다. 잠시 뒤에 다시 시도해 주세요");
 			}
 			return num;
 		}

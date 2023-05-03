@@ -324,7 +324,7 @@ public class UserATM_Impl implements UserATM {
 			System.out.println("\t  ┃                            * ┃");
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
 			System.out.println("");
-			System.out.print("\t송금하실 금액을 입력해주세요 [취소:0] :");
+			System.out.print("\t송금하실 금액을 입력해주세요 [취소:0] : ");
 			
 			try {
 				int money = Menu.scan.nextInt();
