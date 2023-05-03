@@ -251,7 +251,6 @@ public class Menu {
 					System.out.println("\t  ┃  ━━━━━━━━━━━━━━━━━━━━━━━━━━  *");
 					System.out.println("\t  ┃             *");
 					System.out.println("\t  ┃ 고객 ID : "+ dto.getUser_id());
-					System.out.println("\t  ┃ 고객 PW : "+ dto.getUser_password());
 					System.out.println("\t  ┃ 고객 타입 : "+ dto.getType());
 					System.out.println("\t  ┃ 고객 이름 : "+ dto.getName());
 					System.out.println("\t  ┃ 고객 생년 월일 : "+ dto.getBirth_day());
