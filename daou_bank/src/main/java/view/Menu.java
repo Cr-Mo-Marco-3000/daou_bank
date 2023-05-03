@@ -4,8 +4,6 @@ import java.io.Console;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.ibatis.session.SqlSession;
-
 import controller.EmployeeServiceImpl;
 import controller.ManagerServiceImpl;
 import controller.UserATM_Impl;
@@ -13,13 +11,10 @@ import controller.UserJoin_Impl;
 import dto.AccountDTO;
 import dto.UserDTO;
 import exception.AccountRequestNotFoundException;
-import exception.AllCustomerInfocheckFailException;
 import exception.CustomerAccountApprovalException;
 import exception.CustomerAccountRejectionException;
-import exception.CustomerEnrolFailException;
 import exception.CustomerInfocheckFailException;
 import exception.DeleteEmployeeFailException;
-import exception.DuplicateCustomerException;
 import exception.EmployeeCreationFailException;
 import exception.HandOverManagerException;
 
@@ -169,8 +164,8 @@ public class Menu {
 					userView(loginedUser,login_User_account_list);
 			}	
 		}
-	}
-		
+	} 
+	 	
 	// 직원이 로그인하면 보이는 뷰
 	public void EmployeeView() {
 		while(true) {
@@ -181,16 +176,13 @@ public class Menu {
 			System.out.println("\t  ┃		      ┃");
 			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
 			System.out.println("\t  ┃ 1) 계좌 생성 요구 조회");
-			System.out.println("\t  ┃ 2) 고객 등록");
-			System.out.println("\t  ┃ 3) 고객 정보 열람");
-			System.out.println("\t  ┃ 4) 고객 계좌 생성 승인");
-			System.out.println("\t  ┃ 5) 고객 계좌 생성 거절");
-			System.out.println("\t  ┃ 6) 전체 회원 정보 조회");
+			System.out.println("\t  ┃ 2) 고객 정보 열람");
+			System.out.println("\t  ┃ 3) 고객 계좌 생성 승인");
 			// 직원이 매니저일 경우, 해당 메뉴들이 보입니다.
 			if (loginedUser.getType() == "Manager") {
-				System.out.println("\t  ┃ 7) 직원 등록");
-				System.out.println("\t  ┃ 8) 관리자 권한 인계");
-				System.out.println("\t  ┃ 9) 직원 삭제");
+				System.out.println("\t  ┃ 4) 직원 등록");
+				System.out.println("\t  ┃ 5) 관리자 권한 인계");
+				System.out.println("\t  ┃ 6) 직원 삭제");
 			}
 			System.out.println("\t  ┃ 0) 로그아웃");
 			System.out.println("\t  ┃     ");
@@ -201,67 +193,109 @@ public class Menu {
 			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
 			System.out.println("");
 			
+ 
 			if (menu == 1) { 
+			    System.out.println("=============================================");
 			    System.out.println("계좌 생성 요구 조회를 선택하셨습니다.");
+			    System.out.println("=============================================");
 			    EmployeeServiceImpl service = new EmployeeServiceImpl();
-			    try {
-			        List<AccountDTO> list = service.getAccountRequests();
-			        System.out.println(list);
-			    } catch (AccountRequestNotFoundException e) {
-			        System.out.println(e.getMessage());
-			    } 
-			    
-			} else if (menu == 2) {
-				System.out.println("고객 등록을 선택하셨습니다.");
-				EmployeeServiceImpl service = new EmployeeServiceImpl();
-				String user_id = scan.nextLine(); // user_id 변수에 값을 할당
-				UserDTO user = new UserDTO(user_id); // UserDTO 객체 생성 후 user_id 값을 설정
-				try {
-					service.registerCustomer(user);
-				} catch (CustomerEnrolFailException e) {
-					System.out.println(e.getMessage());
-				} catch (DuplicateCustomerException e) {
-					System.out.println(e.getMessage()); 
-				}
-			
-			} else if (menu == 3) {
+			    // try 블록에서 AccountRequestNotFoundException 예외가 발생하지 않으므로, 해당 catch 블록은 실행되지 않는다.
+			    // 따라서, 해당 catch 블록을 삭제한다.
+			    List<AccountDTO> list = service.getAccountRequests();
+			    System.out.println("요청 계좌 목록: ");
+			    System.out.println("");
+				System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+				System.out.println("\t┃	요청 계좌 목록  ");
+				System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+				System.out.println("\t  ┃		      ┃");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+				System.out.println("\t  ┃                 *");
+				System.out.println("\t  ┃ ------------------------");
+			    for (AccountDTO account : list) {
+					System.out.println("\t  ┃ 계좌번호 : "+ account.getAccount_num());
+					System.out.println("\t  ┃ 계좌생성일자 : "+ account.getCreate_date());
+					System.out.println("\t  ┃ ------------------------");
+			    }
+				System.out.println("\t  ┃ ");
+				System.out.println("\t  ┃                 *");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+				System.out.println("\t  ┃                   *");
+				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+				System.out.println("");
+			}
+
+		
+
+			else if (menu == 2) {
+				System.out.println("=============================================");
 				System.out.println("고객 정보 열람을 선택하셨습니다.");
+				System.out.println("=============================================");
 				EmployeeServiceImpl service = new EmployeeServiceImpl();
-				String user_id = scan.nextLine(); // user_id 변수에 값을 할당
+				System.out.println("열람할 고객 ID를 입력하세요.");
+			    String user_id = scan.next(); // user_id 변수에 값을 할당
 				try { 
-					service.getCustomerById(user_id);
+					UserDTO dto = service.getCustomerById(user_id);
+					System.out.println("고객 정보: ");
+					System.out.println("---------------------------------------------");
+				    System.out.println("");
+					System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+					System.out.println("\t┃	고객 정보 조회  ");
+					System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+					System.out.println("\t  ┃		      ┃");
+					System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+					System.out.println("\t  ┃                 *");
+					System.out.println("\t  ┃ 고객 ID : "+ dto.getUser_id());
+					System.out.println("\t  ┃ 고객 PW : "+ dto.getUser_password());
+					System.out.println("\t  ┃ 고객 타입 : "+ dto.getType());
+					System.out.println("\t  ┃ 고객 이름 : "+ dto.getName());
+					System.out.println("\t  ┃ 고객 생년 월일 : "+ dto.getBirth_day());
+					System.out.println("\t  ┃ ");
+					System.out.println("\t  ┃                 *");
+					System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+					System.out.println("\t  ┃                   *");
+					System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+					System.out.println("");
+					System.out.println("---------------------------------------------");
 				} catch (CustomerInfocheckFailException e) {
 					System.out.println(e.getMessage());
 				}
-			} else if (menu == 4) {
-				System.out.println("고객 계좌 생성 승인을 선택하셨습니다.");
-				EmployeeServiceImpl service = new EmployeeServiceImpl();
-				String user_id = scan.nextLine(); // user_id 변수에 값을 할당
-				try {
-					service.approveCustomer(user_id);
-				} catch (CustomerAccountApprovalException e) {
-					System.out.println(e.getMessage());
-				}
 			} 
-			else if (menu == 5) {
-				System.out.println("고객 계좌 생성 거절을 선택하셨습니다.");
-				String user_id = scan.nextLine(); // user_id 변수에 값을 할당
-				EmployeeServiceImpl service = new EmployeeServiceImpl();
-				try {
-					service.rejectAccountRequest(user_id);
-				} catch (CustomerAccountRejectionException  e) {
-					System.out.println(e.getMessage());
-				}
-				
-			} else if (menu == 6) {
-				System.out.println("전체 회원 정보 조회을 선택하셨습니다.");
-				EmployeeServiceImpl service = new EmployeeServiceImpl();
-				try {
-					service.getAllCustomers();
-				} catch (AllCustomerInfocheckFailException e) {
-					System.out.println(e.getMessage());
-				}
-			} else if (menu == 7) {
+			else if (menu == 3) {
+			    System.out.println("=============================================");
+			    System.out.println("고객 계좌 생성 승인을 선택하셨습니다.");
+			    System.out.println("=============================================");
+			    EmployeeServiceImpl service = new EmployeeServiceImpl();
+			    boolean isValidAccountNum = false;
+			    String account_num = "";
+			    while (!isValidAccountNum) {
+			        System.out.println("승인할 계좌를 입력하세요."); // 110-484-423099
+			        account_num = scan.next(); // 계좌번호를 입력받습니다.
+			        // 계좌 번호의 양식이 맞는지 검사합니다.
+			        if (account_num.matches("\\d{3}-\\d{3}-\\d{6}")) {
+			            isValidAccountNum = true; // 계좌 번호의 양식이 맞으면 while 루프를 빠져나갑니다.
+			            service.approveCustomer(account_num);
+			        } else {
+			            System.out.println("계좌 번호의 양식이 맞지 않습니다. 다시 입력하세요.");
+			        }
+			    }
+			    System.out.println("승인이 완료되었습니다. (실제 계좌 생성: 1-> 0)");
+			    System.out.println("");
+			    System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
+			    System.out.println("\t┃	승인 여부 확인  ");
+			    System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
+			    System.out.println("\t  ┃		      ┃");
+			    System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
+			    System.out.println("\t  ┃                 *");
+			    System.out.println("\t  ┃ ------------------------");
+			    System.out.println("\t  ┃ 계좌번호 : "+ account_num);
+			    System.out.println("\t  ┃ ------------------------");
+			    System.out.println("\t  ┃ ");
+			    System.out.println("\t  ┃                 *");
+			    System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
+			    System.out.println("\t  ┃                   *");
+			    System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+			    System.out.println("");
+		} else if (menu == 4) {
 				System.out.println("직원 등록을 선택하셨습니다.");
 				ManagerServiceImpl service = new ManagerServiceImpl();
 				// 아이디
@@ -325,7 +359,7 @@ public class Menu {
 				} catch (EmployeeCreationFailException e) {
 					System.out.println(e.getMessage());
 				}
-			} else if (menu == 8) {
+			} else if (menu == 5) {
 				System.out.println("관리자 권한 인계를 선택하셨습니다.");
 				ManagerServiceImpl service = new ManagerServiceImpl();
 				System.out.println("인계하시려는 직원 아이디를 입력해주세요");
@@ -336,7 +370,7 @@ public class Menu {
 					System.out.println(e.getMessage());
 				}
 				
-			} else if (menu == 9) {
+			} else if (menu == 6) {
 				System.out.println("직원 삭제를 선택하셨습니다.");
 				ManagerServiceImpl service = new ManagerServiceImpl();
 				System.out.println("삭제하시려는 직원 아이디를 입력해주세요");

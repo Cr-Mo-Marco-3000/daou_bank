@@ -12,11 +12,18 @@ import exception.DuplicateCustomerException;
 
 public class EmployeeDAO {
 	
+	
+	// 중복확인
+	public int isDuplicatedCustomer (SqlSession session, String userId) {
+		int n = 0;
+		n = session.selectOne("mybatis.ManagerMapper.isDuplicatedCustomer", userId);
+		return n;
+	}
+		
 
 	// 계좌 생성 요구 조회 
 	public List<AccountDTO> getAccountRequests(SqlSession session) {
-	    List<AccountDTO> accountList = null;
-	    accountList = session.selectList("mybatis.EmployeeMapper.getAccountRequests");
+	    List<AccountDTO> accountList = session.selectList("mybatis.EmployeeMapper.getAccountRequests");
 	    return accountList;
 	}
 	
@@ -24,7 +31,7 @@ public class EmployeeDAO {
 	public int registerCustomer(SqlSession session, UserDTO user) throws CustomerEnrolFailException, DuplicateCustomerException {
 	    try {
 	        // 중복 여부 검사
-	        int count = session.selectOne("mybatis.EmployeeMapper.isDuplicatedCustomer", user.getUserId());
+	        int count = session.selectOne("mybatis.EmployeeMapper.isDuplicatedCustomer", user);
 	        if (count > 0) {
 	            throw new DuplicateCustomerException("이미 등록된 고객입니다.");
 	        }
@@ -49,12 +56,12 @@ public class EmployeeDAO {
 	}
 
 	// 고객 승인 
-	public int approveCustomer(SqlSession session, String user_id) {
-	    int count = session.update("mybatis.EmployeeMapper.approveCustomer", user_id);
+	public int approveCustomer(SqlSession session, String account_num) {
+	    int count = session.update("mybatis.EmployeeMapper.approveCustomer", account_num);
 	    return count;
 	}
 	
-	
+
 	
 	// 고객(계좌) 승인 거절
  	public int rejectAccountRequest(SqlSession session, String user_id){
@@ -81,10 +88,9 @@ public class EmployeeDAO {
 
 	// 고객 정보 열람 
 	public UserDTO getCustomerById(SqlSession session, String user_id) {
-		UserDTO user = null;
 		// getCustomerById라는 쿼리를 실행하여 user_id와 일치하는 고객 정보를 조회하고, 그 결과를 UserDTO 객체로 반환
 		// selectOne 메서드는 org.apache.ibatis.session.SqlSession 인터페이스에 정의
-		user = session.selectOne("mybatis.EmployeeMapper.getCustomerById", user_id);
+		UserDTO user = session.selectOne("mybatis.EmployeeMapper.getCustomerById", user_id);
 		return user;
 	}
 	

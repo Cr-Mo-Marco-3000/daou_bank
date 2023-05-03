@@ -4,6 +4,12 @@
         
 <mapper namespace="mybatis.EmployeeMapper">
    
+   		<!-- 고객 id 중복 확인  -->
+		<select id="isDuplicatedCustomer" parameterType="String" resultType="int">
+		    SELECT COUNT(*) FROM bank_user WHERE user_id = #{userId}
+		</select>
+	 
+  
 	  <!-- 계좌 생성 요구 조회 -->
 	  <select id="getAccountRequests" resultType="dto.AccountDTO">
 	    SELECT *
@@ -28,23 +34,16 @@
 		  	#{birth_day})
 	  </insert>
 		
-	<!-- 고객 id 중복 확인  -->
-	<select id="isDuplicatedCustomer" parameterType="String" resultType="int">
-	    SELECT COUNT(*) FROM bank_user WHERE user_id = #{userId}
-	</select>
+
 	 
-	 
-	  <!-- 고객 승인 -->
-		<update id="approveCustomer" parameterType="int">
-		  UPDATE bank_user
+	  <!-- 고객 계좌 승인 -->
+		<update id="approveCustomer" parameterType="String">
+		  UPDATE Account 
 		  SET is_temporary = 0
-		  WHERE user_key = #{userKey}
+		  WHERE account_num = #{account_num}  
 		</update>
 	  
-	  <!-- 고객 승인 거절 -->
-	   <delete id="deleteAccountRequest" parameterType="String">
-		DELETE FROM account_request WHERE user_id = #{user_id}
-	   </delete>
+	
 	  
 	  <!-- 고객 정보 열람 -->
 	  <select id="getCustomerById" parameterType="String" resultType="dto.UserDTO">
@@ -54,9 +53,4 @@
 	  </select>
 	  
 	
-	  <!-- 전체 회원 정보 조회 -->
-	  <select id="getAllCustomers" resultType="dto.UserDTO">
-	    SELECT *
-	    FROM bank_user 
-	  </select>
 </mapper>
