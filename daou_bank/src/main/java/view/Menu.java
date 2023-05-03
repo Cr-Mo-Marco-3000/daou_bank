@@ -171,7 +171,11 @@ public class Menu {
 			System.out.println("");
 			System.out.println("\t┏━━━━━━━━━* Daou_Bank ATM ━━━━━━━━━┓");
 			System.out.println("\t┃	      	 	      	   ┃");
-			System.out.println("\t┃	        	   	   ┃");
+			if (userdto.getType().equals("Manager")) {
+				System.out.println("\t┃	      Manager    	   ┃");
+			} else if (userdto.getType().equals("Employee")) {
+				System.out.println("\t┃	      Employee    	   ┃");
+			}
 			System.out.println("\t┃	   			   ┃");
 			System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 			System.out.println("\t  ┃		                 ┃");
@@ -282,7 +286,7 @@ public class Menu {
 			            System.out.println("\t계좌 번호의 양식이 맞지 않습니다. 다시 입력하세요.");
 			        }
 			    }
-			    System.out.println("\t승인이 완료되었습니다. (실제 계좌 생성: 1-> 0)");
+			    System.out.println("\t승인이 완료되었습니다.");
 			    System.out.println("");
 				System.out.println("\t┏━━━━━━━━━* Daou_Bank ATM ━━━━━━━━━┓");
 				System.out.println("\t┃	      	 	      	   ┃");
