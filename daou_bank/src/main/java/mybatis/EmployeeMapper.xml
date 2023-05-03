@@ -43,7 +43,6 @@
 		  WHERE account_num = #{account_num}  
 		</update>
 	  
-	
 	  
 	  <!-- 고객 정보 열람 -->
 	  <select id="getCustomerById" parameterType="String" resultType="dto.UserDTO">

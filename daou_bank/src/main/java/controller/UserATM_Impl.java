@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -24,6 +25,7 @@ import dao.BankDAO;
 import dto.AccountDTO;
 import dto.TransactionDTO;
 import dto.UserDTO;
+import exception.CustomerAccountApprovalException;
 import view.Menu;
 
 public class UserATM_Impl implements UserATM {
@@ -530,6 +532,27 @@ public class UserATM_Impl implements UserATM {
 		AccountDTO account_tmp = new AccountDTO();
 		DBDAO db_create_dao = new DBDAO();
 		
+		Random rand = new Random();
+		
+		String account_num = null;
+		
+		// 해당 계좌번호가 존재하는지 확인
+		while (true) {
+			String FirstNum = Integer.toString(rand.nextInt(399 - 311 + 1) + 311);
+			String SecondNum = Integer.toString(rand.nextInt(999 - 100 + 1) + 100);
+			String ThirdNum = Integer.toString(rand.nextInt(999999 - 111111 + 1) + 111111);
+			account_num = FirstNum + '-' + SecondNum + '-' + ThirdNum;
+			try {
+				if (db_create_dao.checkDuplicatedAccountNum(session, account_num) == 0) {
+					break;
+				}
+			} catch (CustomerAccountApprovalException e) {
+				System.out.println(e.getMessage());
+				return;
+			}
+		}
+
+		// 임시 계좌 생성
 		do {
 			System.out.println("\t개설할 계좌의 비밀번호를 입력해주세요");
 			input_pw = scan_pw.next();			
@@ -552,8 +575,9 @@ public class UserATM_Impl implements UserATM {
 		try {
 			account_tmp = new AccountDTO(user_key, input_pw);
 			account_tmp.setAccount_password(db_create_dao.Encryptonize_pw(""+account_tmp.getAccount_password(), db_create_dao.create_random_seed()));
-			String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
-			account_tmp.setAccount_num(account_tmp_num);
+//			String account_tmp_num = db_create_dao.create_tmp_account_num(session, account_tmp);
+//			account_tmp.setAccount_num(account_tmp_num);
+			account_tmp.setAccount_num(account_num);
 			n_sql_insert = db_create_dao.insert_account_db(session, account_tmp);
 			if (n_sql_insert == 0) {
 				System.out.println("\t계좌 개설 정보가 잘못되어, 개설요청이 정상적으로 이루어지지 않았습니다. 계좌 개설 요청 정보를 다시 입력해주세요.");
