@@ -25,8 +25,6 @@ public class Main {
 		LoginTimer timer = new LoginTimer(1, 0, 0);
 		timer.start();
 		menu.init();
-		System.out.println("앙냥냥");
-		// 임시 유저
 
 		
 	}
