@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
  	    accountList = dao.getAccountRequests(session);
  	    try {
  	        if (accountList == null || accountList.isEmpty()) {
- 	            throw new AccountRequestNotFoundException("계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다.");
+ 	            throw new AccountRequestNotFoundException("\t 계좌 생성 요구 조회 실패: 조회된 데이터가 없습니다.");
  	        }
  	        if (session != null) {
  	            session.commit();
@@ -75,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 	EmployeeDAO dao = new EmployeeDAO();
 	 	UserDTO user = dao.getCustomerById(session, user_id);
 	 	if (user == null) {
-	 		throw new CustomerInfocheckFailException("고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
+	 		throw new CustomerInfocheckFailException("\t 고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
 	 	}
 	 	    session.commit();
 	 		return user;
@@ -106,9 +106,5 @@ public class EmployeeServiceImpl implements EmployeeService {
  		session.close();
  	}
  	}  
-
-
-	 	
-
 	 	
 }
