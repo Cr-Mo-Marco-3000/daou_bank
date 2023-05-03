@@ -24,5 +24,6 @@
     <mapper resource="mybatis/AccountMapper.xml"/>
     <mapper resource="mybatis/ManagerMapper.xml"/>
     <mapper resource="mybatis/EmployeeMapper.xml"/>
+    <mapper resource="mybatis/TransactionMapper.xml"/>
    </mappers>
 </configuration>

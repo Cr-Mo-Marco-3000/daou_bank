@@ -4,13 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.BankMapper">
  
-	<!-- 거래내역 -->
-	<select id="transactionHistory" parameterType="String" resultType="dto.TransactionDTO">
-		select *
-		from TRANSACTION
-		where TRANSACTION_SEND_NAME = #{name}
-	</select>
-
 	<update id="updateBalance" parameterType="dto.AccountDTO">
 	  update account
 	  set balance = #{balance}

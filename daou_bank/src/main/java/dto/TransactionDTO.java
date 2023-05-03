@@ -12,7 +12,8 @@ public class TransactionDTO {
 	int transaction_key;		// primary_key
 	int transaction_type;			
 	int transaction_amount;
-	int transaction_datetime;
+	int transaction_balance;
+	String transaction_datetime;
 	String account_num;
 	String transaction_send_name;
 	String transaction_take_name;

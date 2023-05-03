@@ -16,7 +16,7 @@ import dto.AccountDTO;
 import dto.TransactionDTO;
 import dto.UserDTO;
 
-public class BankDAO {
+public class TransactionDAO {
 
 		// SQL 세션 생성 ===========================================
 		static SqlSessionFactory sqlSessionFactory;
@@ -33,28 +33,22 @@ public class BankDAO {
 		}// static블럭 end
 		
 		
-		public int deleteOutdatedTemporaryAccount (SqlSession session) {
-			int n = 0;
-			System.out.println("딜리트 시작");
-			n = session.delete("mybatis.BankMapper.deleteOutdatedTemporaryAccount");
-			System.out.println("딜리트 끝");
-			return n;
-		}
-
-		// 계좌 잔액 업데이트
-		public int updateBalance(String account, int balance) {
+		// 총 거래 내역
+		public List<TransactionDTO> transaction_history(String account_num) {
 			SqlSession session = sqlSessionFactory.openSession();
 			
-			AccountDTO dto = new AccountDTO();
+			List<TransactionDTO> history = session.selectList("transaction_history", account_num);
 			
-			dto.setAccount_num(account);
-			dto.setBalance(balance);
+			return history;
+		}
 
-			int result = session.update("updateBalance", dto);
+		// 거래 내역 삽입
+		public void insert_transaction(TransactionDTO dto) {
+			SqlSession session = sqlSessionFactory.openSession();
+			
+			int transaction = session.insert("insert_transaction", dto);
 			
 			session.commit();
-			
-			return result;
 		}
 			
 }
