@@ -11,6 +11,7 @@ public interface UserATM {
 	public List<AccountDTO> getAccountList(UserDTO loginedUser);	// 보유 계좌 가져오는 함수
 	public void showAccount(UserDTO loginedUser); 	 				// 계좌 목록 출력 함수
 	public TransactionDTO setTransactionDTO(int type, int amount, int balance, String accountNum, String sendName, String takeName, String accountCounterpartNum); // TransactionDTO 설정
+	public boolean checkAccount(String account_num, UserDTO userDTO);  // 본인 계좌 확인
 	public void userBalance(UserDTO userDTO); 		 //잔액확인
 	public void userWithdraw(UserDTO userDTO); 		 //출금
 	public void userDeposit(UserDTO loginedUser); 	 //입금

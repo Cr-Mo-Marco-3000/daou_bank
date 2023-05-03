@@ -64,12 +64,14 @@ Menu menu = Menu.getInstance();
 		DBDAO db_dao = new DBDAO();
 		
 		System.out.println("");
-		System.out.println("\t┏━━━* Daou_Bank ATM ━━━━┓");
-		System.out.println("\t┃        회 원 가 입      	┃");
-		System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━┛");
-		System.out.println("\t  ┃		      ┃");
-		System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  *");
-		System.out.println("\t  ┃		      ┃");
+		System.out.println("\t┏━━━━━━━━━* Daou_Bank ATM ━━━━━━━━━┓");
+		System.out.println("\t┃	      	 	      	   ┃");
+		System.out.println("\t┃	      회 원 가 입	   	   ┃");
+		System.out.println("\t┃	   			   ┃");
+		System.out.println("\t┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
+		System.out.println("\t  ┃		                 ┃");
+		System.out.println("\t  ┃  ━━━━━━━━━━━━━━━━━━━━━━━━━━  *");
+		System.out.println("\t  ┃             *");
 		System.out.println("\t  ┃  뒤로가기 [0]");
 		System.out.print("\t  ┃  ID : ");
 		String id = Menu.scan.next();	
@@ -77,10 +79,11 @@ Menu menu = Menu.getInstance();
 		
 		if(db_dao.check_Id(session, id)) {
 			System.out.println("\t  ┃ 중복된 아이디입니다.");
-			System.out.println("\t  ┃                 *");
-			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
-			System.out.println("\t  ┃                   *");
-			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+			System.out.println("\t  ┃                 ");
+			System.out.println("\t  ┃  ━━━━━━━━━━━━━━━━━━━━━━━━━━  ┃");
+			System.out.println("\t  ┃                            *");
+			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+			System.out.println("");
 			return;
 		}
 		System.out.print("\t  ┃  PW : ");
@@ -101,19 +104,21 @@ Menu menu = Menu.getInstance();
 			/*회원가입 메소드 userSingup() 에서 중복된 아이디가 있으면*/
 			if (db_dao.check_dupli_user_db(session, userdto)) {
 				System.out.println("\t  ┃ 이미 존재하는 회원입니다.");
-				System.out.println("\t  ┃                 *");
-				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
-				System.out.println("\t  ┃                   *");
-				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+				System.out.println("\t  ┃                 ");
+				System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━━━━━━━━━━━  ┃");
+				System.out.println("\t  ┃                            *");
+				System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+				System.out.println("");
 				return;
 			}
 			
 			/*회원가입 메소드 userSingup() 에서 아이디 중복검사를 거친후 최종적으로 계좌생성이 되면*/
-			System.out.println("\t  ┃ 회원가입이 완료되었습니다.");
-			System.out.println("\t  ┃                 *");
-			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━  ┃");
-			System.out.println("\t  ┃                   *");
-			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━┛\n");
+			System.out.println("\t  ┃  회원가입이 완료되었습니다.");
+			System.out.println("\t  ┃                 ");
+			System.out.println("\t  ┃ ━━━━━━━━━━━━━━━━━━━━━━━━━━  ┃");
+			System.out.println("\t  ┃                            *");
+			System.out.println("\t  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+			System.out.println("");
 
 			/* 계좌정보 저장 */ 
 			userdto.setUser_password(db_dao.Encryptonize_pw(userdto.getUser_password(),db_dao.create_random_seed()));		
@@ -121,7 +126,7 @@ Menu menu = Menu.getInstance();
 			session.commit();
 			
 		} catch(Exception e) {
-			System.out.println("\t 회원가입 정보가 잘못되었습니다.");
+			System.out.println("\t회원가입 정보가 잘못되었습니다.");
 			session.rollback();
 		} finally {
 			session.close();
@@ -139,9 +144,9 @@ Menu menu = Menu.getInstance();
 		DBDAO user_login_dao = new DBDAO();
 		UserDTO userdto;
 		
-		System.out.print("\t 아이디를 입력하세요 : ");
+		System.out.print("\t아이디를 입력하세요 : ");
 		String id = Menu.scan.next();
-		System.out.print("\t 비밀번호를 입력하세요 : ");
+		System.out.print("\t비밀번호를 입력하세요 : ");
 		String pw = Menu.scan.next();
 		try {
 			userdto = new UserDTO(id,pw);
@@ -158,10 +163,10 @@ Menu menu = Menu.getInstance();
 					menu.EmployeeView(logined_User);
 				}
 			}else {
-				System.out.println("\t 아이디 & 비밀번호를 확인해주세요.");
+				System.out.println("\t아이디 & 비밀번호를 확인해주세요.");
 			}
 		} catch(Exception e) {
-			System.out.println("\t 로그인 정보가 잘못 되었습니다. 다시 입력 해주세요. ");
+			System.out.println("\t로그인 정보가 잘못 되었습니다. 다시 입력 해주세요. ");
 		} finally {
 			session.close();
 		}
