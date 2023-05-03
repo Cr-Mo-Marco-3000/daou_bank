@@ -72,16 +72,15 @@ public class EmployeeServiceImpl implements EmployeeService {
  	public UserDTO getCustomerById(String user_id) throws CustomerInfocheckFailException {
  	SqlSession session = sqlSessionFactory.openSession();
 	 	try {
-	 	EmployeeDAO dao = new EmployeeDAO();
-	 	UserDTO user = dao.getCustomerById(session, user_id);
-	 	if (user == null) {
-	 		throw new CustomerInfocheckFailException("\t 고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
-	 	}
+		 	EmployeeDAO dao = new EmployeeDAO();
+		 	UserDTO user = dao.getCustomerById(session, user_id);
+		 	if (user == null) {
+		 		throw new CustomerInfocheckFailException("\t 고객 정보 조회 실패: 해당 ID의 고객이 존재하지 않습니다.");
+		 	}
 	 	    session.commit();
 	 		return user;
-	 	} catch (CustomerInfocheckFailException e) {
-	 		System.out.println( e.getMessage());
-	 	throw e; // 예외를 호출한 측으로 
+	 	} catch (Exception e) {
+	 		throw e; // 예외를 호출한 측으로 
 	 	} finally {
 	 		session.close();
 	 	}
