@@ -1,6 +1,7 @@
 package controller;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.ibatis.io.Resources;
@@ -51,20 +52,14 @@ public class ManagerServiceImpl implements ManagerService {
 	@Override
 	public int registerEmployee (UserDTO user) throws EmployeeCreationFailException {
 		int num = 0;
-		
 		// 암호화
 		DBDAO dbdao = new DBDAO();
-
 		user.setUser_password(dbdao.Encryptonize_pw(user.getUser_password(), dbdao.create_random_seed()));
 		SqlSession session = sqlSessionFactory.openSession();
-		System.out.println(user);
 		try {
 			ManagerDAO dao = new ManagerDAO();
 			// 직원 등록
 			num = dao.registerEmployee(session, user);
-			if (num == 0) {
-				throw new EmployeeCreationFailException("\t 직원 등록에 실패했습니다.");
-			}
 			session.commit();
 		} catch (Exception e) {
 			throw new EmployeeCreationFailException("\t 알 수 없는 에러가 발생했습니다. 나중에 다시 시도해 주세요.");

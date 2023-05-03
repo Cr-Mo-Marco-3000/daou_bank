@@ -218,7 +218,7 @@ public class Menu {
 				System.out.println("\t  ┃ ------------------------");
 			    for (AccountDTO account : list) {
 					System.out.println("\t  ┃ 계좌번호 : "+ account.getAccount_num());
-					System.out.println("\t  ┃ 계좌생성일자 : "+ account.getCreate_date());
+					System.out.println("\t  ┃ 계좌생성일자 : "+ account.getCreate_date().toString().substring(0, 10));
 					System.out.println("\t  ┃ ------------------------");
 			    }
 				System.out.println("\t  ┃                 ");
@@ -253,7 +253,7 @@ public class Menu {
 					System.out.println("\t  ┃ 고객 ID : "+ dto.getUser_id());
 					System.out.println("\t  ┃ 고객 타입 : "+ dto.getType());
 					System.out.println("\t  ┃ 고객 이름 : "+ dto.getName());
-					System.out.println("\t  ┃ 고객 생년 월일 : "+ dto.getBirth_day());
+					System.out.println("\t  ┃ 고객 생년 월일 : "+ dto.getBirth_day().toString().substring(0, 10));
 					System.out.println("\t  ┃                 ");
 					System.out.println("\t  ┃  ━━━━━━━━━━━━━━━━━━━━━━━━━━  ┃");
 					System.out.println("\t  ┃                            * ┃");
@@ -319,6 +319,7 @@ public class Menu {
 						System.out.println(e.getMessage());
 					}
 				};
+
 				// 비밀번호
 				Console console = System.console();
 				String user_password = "";
